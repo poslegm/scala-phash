@@ -1,0 +1,11 @@
+[0m[[0minfo[0m] [0m[32mPHashTest:[0m[0m
+[0m[[0minfo[0m] [0m[32mBufferedImage equal check[0m[0m
+[0m[[0minfo[0m] [0m[32m- should work correct[0m[0m
+[0m[[0minfo[0m] [0m[32mMakeGrayscale[0m[0m
+[0m[[0minfo[0m] [0m[32m- should work correct[0m[0m
+[0m[[0minfo[0m] [0m[32mMakeConvolved[0m[0m
+[0m[[0minfo[0m] [0m[32m- should work correct[0m[0m
+[0m[[0minfo[0m] [0m[32mResize[0m[0m
+[0m[[0minfo[0m] [0m[32m- should work correct[0m[0m
+[0m[[0minfo[0m] [0m[32mPHash[0m[0m
+[0m[[0minfo[0m] [0m[32m- should create correct dct matrix[0m[0m
