@@ -1,9 +1,12 @@
-import java.awt.Image
+import java.awt.{Color, Image}
 import java.awt.image.{BufferedImage, ConvolveOp, Kernel}
 
 object ImageUtils {
 
   implicit class BufferedImageExtended(image: BufferedImage) {
+    /**
+      * Makes image grayscale by converting RGB to YCbCr and keeping Y channel only
+      * */
     def makeGrayScale(): BufferedImage = {
       val grayScaledImage = new BufferedImage(
         image.getWidth,
@@ -18,11 +21,10 @@ object ImageUtils {
         y <- 0 until image.getHeight
       } yield (x, y)
 
-      val raster = image.getRaster
       coordinates.foreach {
         case (x, y) =>
-          val pixel = raster.getPixel(x, y, Array.fill(4)(0))
-          val (r, g, b) = (pixel(0), pixel(1), pixel(2))
+          val pixel = new Color(image.getRGB(x, y))
+          val (r, g, b) = (pixel.getRed, pixel.getGreen, pixel.getBlue)
 
           val Y = cut(((66 * r + 129 * g + 25 * b + 128) / 256.0f + 16).toInt, 0, 255)
           val newPixel = (Y << 16) | (Y << 8) | Y
@@ -37,16 +39,15 @@ object ImageUtils {
       grayScaledImage
     }
 
-    def makeConvolved(): BufferedImage = {
-      val grayScaledImage = makeGrayScale()
+    def makeConvolved(kernelSize: Int = 7): BufferedImage = {
+      val n = kernelSize * kernelSize
+      val kernelData = Array.tabulate(n)(_ => 1 / n.toFloat)
+      val op = new ConvolveOp(new Kernel(kernelSize, kernelSize, kernelData))
 
-      val kernelData = Array.tabulate(49)(_ => 1 / 49f)
-      val op = new ConvolveOp(new Kernel(7, 7, kernelData))
-
-      op.filter(grayScaledImage, null)
+      op.filter(image, null)
     }
 
-    def resize(width: Int = 32, height: Int = 32): BufferedImage = {
+    def resize(width: Int, height: Int): BufferedImage = {
       val temp = image.getScaledInstance(width, height, Image.SCALE_SMOOTH)
       val res = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
 
@@ -86,8 +87,12 @@ object ImageUtils {
         val green2 = (pixel2 >> 8) & 0x000000FF
         val blue2 = pixel2 & 0x000000FF
 
-        println((red1, green1, blue1), (red2, green2, blue2))
+        println("this: ", (red1, green1, blue1), "other: ", (red2, green2, blue2))
       }
+    }
+
+    def toMatrix: Array[Array[Float]] = {
+      Array.tabulate(image.getWidth(), image.getHeight())((i, j) => image.getRGB(i, j))
     }
   }
 

@@ -1774,9 +1774,9 @@
 [debug] 	[NOT REQUIRED] org.scala-sbt#test-interface;1.0!test-interface.jar
 [debug] 	[NOT REQUIRED] org.scala-sbt#apply-macro;0.13.13!apply-macro.jar
 [debug] 	[NOT REQUIRED] org.scala-sbt#template-resolver;0.1!template-resolver.jar
-[debug] :: resolution report :: resolve 1065ms :: artifacts dl 37ms
+[debug] :: resolution report :: resolve 1214ms :: artifacts dl 33ms
 [debug] 	report for default#scala-phash$sbt_2.10;1.0 default produced in /home/poslegm/Yandex.Disk/Programming/OpenSource/scala-phash/target/resolution-cache/reports/default-scala-phash$sbt_2.10-default.xml
-[debug] 	resolve done (1065ms resolve - 37ms download)
+[debug] 	resolve done (1214ms resolve - 33ms download)
 [debug] Using inline dependencies specified in Scala.
 [debug] :: resolving dependencies :: default#scala-phash$sources_2.10;1.0
 [debug] 	confs: [default]
@@ -2470,6 +2470,6 @@
 [debug] 	[NOT REQUIRED] org.scala-lang#scala-compiler;2.10.6!scala-compiler.jar(src)
 [debug] 	[NOT REQUIRED] org.scala-sbt#interface;0.13.13!interface.jar(src)
 [debug] 	[NOT REQUIRED] org.scala-sbt#logging;0.13.13!logging.jar(src)
-[debug] :: resolution report :: resolve 237ms :: artifacts dl 42ms
+[debug] :: resolution report :: resolve 219ms :: artifacts dl 34ms
 [debug] 	report for default#scala-phash$sources_2.10;1.0 default produced in /home/poslegm/Yandex.Disk/Programming/OpenSource/scala-phash/target/resolution-cache/reports/default-scala-phash$sources_2.10-default.xml
-[debug] 	resolve done (237ms resolve - 42ms download)
+[debug] 	resolve done (219ms resolve - 34ms download)

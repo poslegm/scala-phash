@@ -24,12 +24,15 @@ class PHashTest extends FlatSpec with Matchers {
   }
 
   "MakeConvolved" should "work correct" in {
-    val a = ImageIO.read(new File("src/test/resources/example1.jpg"))
-    val b = ImageIO.read(new File("src/test/resources/example1.jpg"))
+    val a = ImageIO.read(new File("src/test/resources/example1.jpg")).makeGrayScale()
+    val b = ImageIO.read(new File("src/test/resources/example1.jpg")).makeGrayScale()
 
     ImageIO.write(
       a.makeConvolved(), "jpg", new File("src/test/resources/convolved-example1.jpg")
     )
+
+    a.makeGrayScale().printPixels(ImageIO.read(new File("src/test/resources/canonical-grayscale.jpg")))
+    a.makeConvolved().printPixels(ImageIO.read(new File("src/test/resources/canonical-res1.jpg")))
 
     a.makeConvolved().isEqualTo(b.makeConvolved()) should be (true)
   }
@@ -39,13 +42,17 @@ class PHashTest extends FlatSpec with Matchers {
     val b = ImageIO.read(new File("src/test/resources/example1.jpg"))
 
     ImageIO.write(
-      a.resize(), "jpg", new File("src/test/resources/resized-example1.jpg")
+      a.resize(32, 32), "jpg", new File("src/test/resources/resized-example1.jpg")
     )
 
-    a.resize().isEqualTo(b.resize()) should be (true)
+    a.resize(32, 32).isEqualTo(b.resize(32, 32)) should be (true)
   }
 
   "PHash" should "create correct dct matrix" in {
+    def approximatelyEqual(x: Float, y: Float, delta: Float): Boolean = {
+      y - delta <= x && x <= y + delta
+    }
+
     val canonical = Array(
       Array(0.408248, 0.557678, 0.5, 0.408248, 0.288675, 0.149429),
       Array(0.408248, 0.408248, 3.53525e-17, -0.408248, -0.57735, -0.408248),
@@ -66,16 +73,16 @@ class PHashTest extends FlatSpec with Matchers {
     } yield approximatelyEqual(matrix(i)(j), canonical(i)(j), 0.000001f)).forall(x => x) should be (true)
   }
 
-  def printMatrix(x: Array[Array[Double]]): Unit = {
-    for (i <- x.indices) {
-      for (j <- x.indices) {
-        print(s"${x(i)(j)} ")
-      }
-      println()
-    }
-  }
+  "PHash" should "compute dct hashes" in {
+    val image = ImageIO.read(new File("src/test/resources/example1.jpg"))
 
-  def approximatelyEqual(x: Float, y: Float, delta: Float): Boolean = {
-    y - delta <= x && x <= y + delta
+    val example2 = ImageIO.read(new File("src/test/resources/example2.jpg"))
+    val example3 = ImageIO.read(new File("src/test/resources/example3.jpg"))
+    val example4 = ImageIO.read(new File("src/test/resources/example4_1.jpg"))
+
+    println("eq", PHash.dctHashDistance(PHash.dctHash(example2), PHash.dctHash(example4)))
+    println("neq", PHash.dctHashDistance(PHash.dctHash(example2), PHash.dctHash(example3)))
+
+    PHash.dctHash(image) shouldEqual 1975408122
   }
 }

@@ -4,7 +4,7 @@
 		module="scala-phash_2.12"
 		revision="1.0"
 		status="integration"
-		publication="20170303220408"
+		publication="20170317000324"
 	>
 		<description>
 		scala-phash
