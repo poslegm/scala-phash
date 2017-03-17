@@ -58,6 +58,38 @@ object ImageUtils {
       res
     }
 
+    def makeBlured(radius: Int, horizontal: Boolean = true): BufferedImage = {
+      createGaussianBlurFilter(radius, horizontal).filter(image, null)
+    }
+
+    private def createGaussianBlurFilter(radius: Int, horizontal: Boolean): ConvolveOp = {
+      if (radius < 1) {
+        throw new IllegalArgumentException("Radius must be >= 1")
+      }
+
+      val size = radius * 2 + 1
+      val sigma = radius / 3.0f
+      val twoSigmaSquare = 2.0f * sigma * sigma
+      val sigmaRoot = Math.sqrt(twoSigmaSquare * Math.PI).toFloat
+
+      val data = for {
+        i <- -radius to radius
+        distance = i * i
+      } yield Math.exp(-distance / twoSigmaSquare).toFloat / sigmaRoot
+
+      val total = data.sum
+
+      val decreasedData = data.map(_ / total).toArray
+
+      val kernel = if (horizontal) {
+        new Kernel(size, 1, decreasedData)
+      } else {
+        new Kernel(1, size, decreasedData)
+      }
+
+      new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null)
+    }
+
     private def cut(x: Int, min: Int, max: Int): Int = Math.min(Math.max(min, x), max)
 
     def isEqualTo(other: BufferedImage): Boolean = {

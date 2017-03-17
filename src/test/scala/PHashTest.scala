@@ -37,6 +37,14 @@ class PHashTest extends FlatSpec with Matchers {
     a.makeConvolved().isEqualTo(b.makeConvolved()) should be (true)
   }
 
+  "MakeBlured" should "work correct" in {
+    val a = ImageIO.read(new File("src/test/resources/example1.jpg"))
+
+    ImageIO.write(
+      a.makeBlured(3), "jpg", new File("src/test/resources/blured-example1.jpg")
+    )
+  }
+
   "Resize" should "work correct" in {
     val a = ImageIO.read(new File("src/test/resources/example1.jpg"))
     val b = ImageIO.read(new File("src/test/resources/example1.jpg"))

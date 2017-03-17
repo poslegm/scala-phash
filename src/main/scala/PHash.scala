@@ -41,6 +41,10 @@ object PHash {
     }
   }
 
+//  def marrHash(image: BufferedImage): Array[Int] = {
+//
+//  }
+
   private def findMedian(floats: Seq[Float]): Float = floats match {
     case xs if xs.length % 2 == 0 =>
       val tail = xs.sorted.drop(xs.length / 2 - 1)
