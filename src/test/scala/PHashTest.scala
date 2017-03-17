@@ -1,10 +1,11 @@
 import java.io.File
+import java.util.Calendar
 import javax.imageio.ImageIO
 
 import ImageUtils._
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.{AsyncFlatSpec, Matchers}
 
-class PHashTest extends FlatSpec with Matchers {
+class PHashTest extends AsyncFlatSpec with Matchers {
     "BufferedImage equal check" should "work correct" in {
     val a = ImageIO.read(new File("src/test/resources/example1.jpg"))
     val b = ImageIO.read(new File("src/test/resources/example1.jpg"))
@@ -13,45 +14,38 @@ class PHashTest extends FlatSpec with Matchers {
   }
 
   "MakeGrayscale" should "work correct" in {
-    val a = ImageIO.read(new File("src/test/resources/example1.jpg"))
-    val b = ImageIO.read(new File("src/test/resources/example1.jpg"))
-
-    ImageIO.write(
-      a.makeGrayScale(), "jpg", new File("src/test/resources/grayscaled-example1.jpg")
-    )
-
-    a.makeGrayScale().isEqualTo(b.makeGrayScale()) should be (true)
-  }
-
-  "MakeConvolved" should "work correct" in {
     val a = ImageIO.read(new File("src/test/resources/example1.jpg")).makeGrayScale()
     val b = ImageIO.read(new File("src/test/resources/example1.jpg")).makeGrayScale()
 
-    ImageIO.write(
-      a.makeConvolved(), "jpg", new File("src/test/resources/convolved-example1.jpg")
-    )
+    ImageIO.write(a, "jpg", new File("src/test/resources/grayscaled-example1.jpg"))
 
-    a.makeGrayScale().printPixels(ImageIO.read(new File("src/test/resources/canonical-grayscale.jpg")))
-    a.makeConvolved().printPixels(ImageIO.read(new File("src/test/resources/canonical-res1.jpg")))
+    a.isEqualTo(b) should be (true)
+  }
 
-    a.makeConvolved().isEqualTo(b.makeConvolved()) should be (true)
+  "MakeConvolved" should "work correct" in {
+    for {
+      a <- ImageIO.read(new File("src/test/resources/example1.jpg")).makeGrayScale().makeConvolved()
+      b <- ImageIO.read(new File("src/test/resources/example1.jpg")).makeGrayScale().makeConvolved()
+    } yield {
+      ImageIO.write(a, "jpg", new File("src/test/resources/convolved-example1.jpg"))
+      a.isEqualTo(b) should be(true)
+    }
   }
 
   "MakeBlured" should "work correct" in {
-    val a = ImageIO.read(new File("src/test/resources/example1.jpg"))
+    val a = ImageIO.read(new File("src/test/resources/example1.jpg")).makeBlured(3)
+    val b = ImageIO.read(new File("src/test/resources/example1.jpg")).makeBlured(3)
 
-    ImageIO.write(
-      a.makeBlured(3), "jpg", new File("src/test/resources/blured-example1.jpg")
-    )
+    ImageIO.write(a, "jpg", new File("src/test/resources/blured-example1.jpg"))
+
+    a.isEqualTo(b) should be (true)
   }
 
   "Resize" should "work correct" in {
     val a = ImageIO.read(new File("src/test/resources/example1.jpg"))
     val b = ImageIO.read(new File("src/test/resources/example1.jpg"))
 
-    ImageIO.write(
-      a.resize(32, 32), "jpg", new File("src/test/resources/resized-example1.jpg")
-    )
+    ImageIO.write(a.resize(32, 32), "jpg", new File("src/test/resources/resized-example1.jpg"))
 
     a.resize(32, 32).isEqualTo(b.resize(32, 32)) should be (true)
   }
@@ -82,15 +76,18 @@ class PHashTest extends FlatSpec with Matchers {
   }
 
   "PHash" should "compute dct hashes" in {
-    val image = ImageIO.read(new File("src/test/resources/example1.jpg"))
-
     val example2 = ImageIO.read(new File("src/test/resources/example2.jpg"))
     val example3 = ImageIO.read(new File("src/test/resources/example3.jpg"))
-    val example4 = ImageIO.read(new File("src/test/resources/example4_1.jpg"))
+    val example4 = ImageIO.read(new File("src/test/resources/example4.jpg"))
 
-    println("eq", PHash.dctHashDistance(PHash.dctHash(example2), PHash.dctHash(example4)))
-    println("neq", PHash.dctHashDistance(PHash.dctHash(example2), PHash.dctHash(example3)))
-
-    PHash.dctHash(image) shouldEqual 1975408122
+    for {
+      example2DctHash <- PHash.dctHash(example2)
+      example3DctHash <- PHash.dctHash(example3)
+      example4DctHash <- PHash.dctHash(example4)
+    } yield {
+      example2DctHash shouldEqual 1169849770
+      PHash.dctHashDistance(example2DctHash, example3DctHash) shouldEqual 37
+      PHash.dctHashDistance(example2DctHash, example4DctHash) shouldEqual 1
+    }
   }
 }

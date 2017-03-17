@@ -2,22 +2,28 @@ import java.awt.image.BufferedImage
 
 import ImageUtils._
 
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 object PHash {
-  def dctHash(image: BufferedImage): Long = {
-    val processedImage = image.makeGrayScale().makeConvolved()
+  def dctHash(image: BufferedImage): Future[Long] = {
+    for {
+      processedImage <- image.makeGrayScale().makeConvolved()
+    } yield {
 
-    val matrix = processedImage.resize(32, 32).toMatrix
+      val matrix = processedImage.resize(32, 32).toMatrix
 
-    val dctMatrix = createDctMatrix(32)
-    val dctMatrixTransposed = dctMatrix.transpose
-    val dctImage = dctMatrix * matrix * dctMatrixTransposed
+      val dctMatrix = createDctMatrix(32)
+      val dctMatrixTransposed = dctMatrix.transpose
+      val dctImage = dctMatrix * matrix * dctMatrixTransposed
 
-    val subSec = dctImage.crop(1, 1, 8, 8).flatten
+      val subSec = dctImage.crop(1, 1, 8, 8).flatten
 
-    val median = findMedian(subSec)
-    (0 until 64).foldLeft(0) {
-      case (res, i) if subSec(i) > median => res | (1 << i)
-      case (res, _) => res
+      val median = findMedian(subSec)
+      (0 until 64).foldLeft(0) {
+        case (res, i) if subSec(i) > median => res | (1 << i)
+        case (res, _) => res
+      }
     }
   }
 

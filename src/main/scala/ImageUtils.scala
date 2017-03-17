@@ -1,8 +1,12 @@
-import java.awt.{Color, Image}
 import java.awt.image.{BufferedImage, ConvolveOp, Kernel}
+import java.awt.{Color, Image}
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 object ImageUtils {
 
+  // TODO decompose methods
   implicit class BufferedImageExtended(image: BufferedImage) {
     /**
       * Makes image grayscale by converting RGB to YCbCr and keeping Y channel only
@@ -39,17 +43,70 @@ object ImageUtils {
       grayScaledImage
     }
 
-    def makeConvolved(kernelSize: Int = 7): BufferedImage = {
-      val n = kernelSize * kernelSize
-      val kernelData = Array.tabulate(n)(_ => 1 / n.toFloat)
-      val op = new ConvolveOp(new Kernel(kernelSize, kernelSize, kernelData))
+    // TODO parallelism
+    def makeConvolved(kernelSize: Int = 7): Future[BufferedImage] = {
+      val res = new BufferedImage(image.getWidth(), image.getHeight(), image.getType)
 
-      op.filter(image, null)
+      val kernel = Array.tabulate(kernelSize, kernelSize)((_, _) => 1.0 / (kernelSize * kernelSize))
+
+      val mx1, my1 = kernel.length / 2
+      val (mx2, my2) = (kernel.length - mx1 - 1, kernel.length - my1 - 1)
+      val (mxe, mye) = (image.getWidth() - mx2, image.getHeight() - my2)
+
+      val innerProcesses = Future.traverse((my1 until mye).grouped(3)) { ys =>
+        Future {
+          for {
+            y <- ys
+            x <- mx1 until mxe
+          } {
+            val value = (for {
+              ym <- -my1 to my2
+              xm <- -mx1 to mx2
+            } yield getY(image, x + xm, y + ym) * kernel(mx1 + xm)(my1 + ym)).sum
+
+            setY(res, x, y, Math.round(value).toInt)
+          }
+        }
+      }
+
+      val outerProcess = Future {
+        for (y <- 0 until image.getHeight()) {
+          var x = 0
+          while (x < image.getWidth()) {
+            val value = (for {
+              ym <- -my1 to my2
+              xm <- -mx1 to mx2
+            } yield {
+              if (x + xm < 0
+                || x + xm >= image.getWidth()
+                || y + ym < 0
+                || y + ym >= image.getHeight()) {
+                0
+              } else {
+                getY(image, x + xm,y + ym) * kernel(mx1 + xm)(my1 + ym)
+              }
+            }).sum
+
+            setY(res, x, y, Math.round(value).toInt)
+
+            if (!(y < my1 || y >= mye) && !(x < mx1 - 1 || x >= mxe)) {
+              x = mxe
+            } else {
+              x += 1
+            }
+          }
+        }
+      }
+
+      for {
+        _ <- innerProcesses
+        _ <- outerProcess
+      } yield res
     }
 
     def resize(width: Int, height: Int): BufferedImage = {
       val temp = image.getScaledInstance(width, height, Image.SCALE_SMOOTH)
-      val res = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
+      val res = new BufferedImage(width, height, image.getType)
 
       val g2d = res.createGraphics()
       g2d.drawImage(temp, 0, 0, null)
@@ -105,6 +162,14 @@ object ImageUtils {
           case (res, (x, y)) => res && image.getRGB(x, y) == other.getRGB(x, y)
         }
       }
+    }
+
+    private def getY(target: BufferedImage, x: Int, y: Int): Int = {
+      (target.getRGB(x, y) >> 0) & 0xFF
+    }
+
+    private def setY(target: BufferedImage, x: Int, y: Int, Y: Int): Unit = {
+      target.setRGB(x, y, Y << 16)
     }
 
     def printPixels(other: BufferedImage): Unit = {
