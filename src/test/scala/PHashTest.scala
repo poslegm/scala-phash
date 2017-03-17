@@ -1,5 +1,4 @@
 import java.io.File
-import java.util.Calendar
 import javax.imageio.ImageIO
 
 import ImageUtils._

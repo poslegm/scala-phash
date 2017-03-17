@@ -12,6 +12,10 @@ object ImageUtils {
       * Makes image grayscale by converting RGB to YCbCr and keeping Y channel only
       * */
     def makeGrayScale(): BufferedImage = {
+      if (image.getType == BufferedImage.TYPE_BYTE_GRAY || image.getType == BufferedImage.TYPE_USHORT_GRAY) {
+        return image
+      }
+
       val grayScaledImage = new BufferedImage(
         image.getWidth,
         image.getHeight,
