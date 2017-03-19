@@ -86,7 +86,7 @@ object ImageUtils {
             val value = (for {
               ym <- -my1 to my2
               xm <- -mx1 to mx2
-            } yield getY(image, x + xm, y + ym) * kernel(mx1 + xm)(my1 + ym)).sum
+            } yield getY(x + xm, y + ym) * kernel(mx1 + xm)(my1 + ym)).sum
 
             setY(res, x, y, Math.round(value))
           }
@@ -107,7 +107,7 @@ object ImageUtils {
                 || y + ym >= image.getHeight()) {
                 0
               } else {
-                getY(image, x + xm,y + ym) * kernel(mx1 + xm)(my1 + ym)
+                getY(x + xm,y + ym) * kernel(mx1 + xm)(my1 + ym)
               }
             }).sum
 
@@ -151,10 +151,8 @@ object ImageUtils {
     }
 
     // TODO benchmark and test marr
-    def makeBlured(sigma: Int): BufferedImage = {
+    def makeBlurred(sigma: Int): BufferedImage = {
       scrImage.filter(GaussianBlurFilter(Math.max(image.getHeight(), image.getWidth()) / 200)).toNewBufferedImage(image.getType)
-//      val temp = createGaussianBlurFilter(sigma, horizontal = true).filter(image, null)
-//      createGaussianBlurFilter(sigma, horizontal = false).filter(temp, null)
     }
 
     def equalize(levels: Int): BufferedImage = {
@@ -201,36 +199,6 @@ object ImageUtils {
       }
     }
 
-//    private def createGaussianBlurFilter(sigma: Float, horizontal: Boolean): ConvolveOp = {
-//      if (sigma < 0) {
-//        throw new IllegalArgumentException("Sigma must be >= 0")
-//      }
-//
-//      val scaledSigma = sigma * Math.max(image.getHeight(), image.getWidth()) / 750
-//
-//      val radius = Math.ceil(scaledSigma * 3).toInt
-//      val size = radius * 2 + 1
-//      val twoSigmaSquare = 2.0f * scaledSigma * scaledSigma
-//      val sigmaRoot = Math.sqrt(twoSigmaSquare * Math.PI).toFloat
-//
-//      val data = for {
-//        i <- -radius to radius
-//        distance = i * i
-//      } yield Math.exp(-distance / twoSigmaSquare).toFloat / sigmaRoot
-//
-//      val total = data.sum
-//
-//      val decreasedData = data.map(_ / total).toArray
-//
-//      val kernel = if (horizontal) {
-//        new Kernel(size, 1, decreasedData)
-//      } else {
-//        new Kernel(1, size, decreasedData)
-//      }
-//
-//      new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null)
-//    }
-
     private def cut(x: Int, min: Int, max: Int): Int = Math.min(Math.max(min, x), max)
 
     def isEqualTo(other: BufferedImage): Boolean = {
@@ -248,27 +216,23 @@ object ImageUtils {
       }
     }
 
-    private def getY(target: BufferedImage, x: Int, y: Int): Int = {
-      (target.getRGB(x, y) >> 0) & 0xFF
+    def getY(x: Int, y: Int): Int = {
+      (image.getRGB(x, y) >> 0) & 0xFF
     }
 
     private def setY(target: BufferedImage, x: Int, y: Int, Y: Int): Unit = {
       target.setRGB(x, y, Y << 16)
     }
 
-    def printPixels(other: BufferedImage): Unit = {
-      for (x <- 0 until Math.min(image.getWidth, 100)) {
-        val pixel1 = image.getRGB(x, 0)
-        val red1 = (pixel1 >> 16) & 0x000000FF
-        val green1 = (pixel1 >> 8) & 0x000000FF
-        val blue1 = pixel1 & 0x000000FF
+    def max(): Int = flattenPixels.max
 
-        val pixel2 = other.getRGB(x, 0)
-        val red2 = (pixel2 >> 16) & 0x000000FF
-        val green2 = (pixel2 >> 8) & 0x000000FF
-        val blue2 = pixel2 & 0x000000FF
+    def / (x: Int): BufferedImage = withNewFlattenPixels(flattenPixels.map(_ / x))
 
-        println("this: ", (red1, green1, blue1), "other: ", (red2, green2, blue2))
+    def pow(x: Int): BufferedImage = {
+      if (x == 1) {
+        image
+      } else {
+        withNewFlattenPixels(flattenPixels.map(p => Math.pow(p, x).toInt))
       }
     }
 

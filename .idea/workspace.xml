@@ -2,16 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="008c3dac-6e4f-40f3-8dda-88eca4a5cc2c" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/resources/canonical-equalized.jpg" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/resources/canonical-blured.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/resources/canonical-res1.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/test/resources/grayscaled-example1.jpg" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/test/resources/blured-example1.jpg" afterPath="$PROJECT_DIR$/src/test/resources/canonical-blurred.jpg" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/test/resources/canonical-grayscale.jpg" afterPath="$PROJECT_DIR$/src/test/resources/canonical-grayscaled.jpg" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/test/resources/convolved-example1.jpg" afterPath="$PROJECT_DIR$/src/test/resources/canonical-convolved.jpg" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/test/resources/resized-example1.jpg" afterPath="$PROJECT_DIR$/src/test/resources/canonical-resized.jpg" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build.sbt" afterPath="$PROJECT_DIR$/build.sbt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/com/poslegm/scalaphash/ImageUtils.scala" afterPath="$PROJECT_DIR$/src/main/scala/com/poslegm/scalaphash/ImageUtils.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/com/poslegm/scalaphash/PHash.scala" afterPath="$PROJECT_DIR$/src/main/scala/com/poslegm/scalaphash/PHash.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/scala/com/poslegm/scalaphash/ImageUtilsTest.scala" afterPath="$PROJECT_DIR$/src/test/scala/com/poslegm/scalaphash/ImageUtilsTest.scala" />
@@ -656,7 +647,14 @@
       <option name="project" value="LOCAL" />
       <updated>1489950796634</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Added jvm opts&#10;Cleaned test images">
+      <created>1489956157127</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1489956157127</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -698,7 +696,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Added Marr hash" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added Marr hash" />
+    <MESSAGE value="Added jvm opts&#10;Cleaned test images" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added jvm opts&#10;Cleaned test images" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -34,8 +34,8 @@ class ImageUtilsTest extends AsyncFlatSpec with Matchers with PrivateMethodTeste
   }
 
   "MakeBlured" should "work correct" in {
-    val a = ImageIO.read(new File("src/test/resources/example1.jpg")).makeBlured(1)
-    val b = ImageIO.read(new File("src/test/resources/example1.jpg")).makeBlured(1)
+    val a = ImageIO.read(new File("src/test/resources/example1.jpg")).makeBlurred(1)
+    val b = ImageIO.read(new File("src/test/resources/example1.jpg")).makeBlurred(1)
 
     ImageIO.write(a, "jpg", new File("src/test/resources/blured-example1.jpg"))
 
