@@ -12,3 +12,7 @@ libraryDependencies ++= Seq(
   "com.sksamuel.scrimage" %% "scrimage-io-extra" % "2.1.8",
   "com.sksamuel.scrimage" %% "scrimage-filters" % "2.1.8"
 )
+
+fork := true
+
+javaOptions in test += "-Xms512M -Xmx1024M -Xss1M -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=256M"
