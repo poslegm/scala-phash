@@ -55,48 +55,98 @@ class PHashTest extends AsyncFlatSpec with Matchers with PrivateMethodTester {
 
   "PHash" should "compute dct hashes" in {
     val example2 = ImageIO.read(new File("src/test/resources/example2.jpg"))
+
+    for {
+      example2DctHash <- PHash.dctHash(example2, 4)
+    } yield {
+      example2DctHash shouldEqual 1169849770
+    }
+  }
+
+  "DCT hash" should "compare not equal" in {
+    val example2 = ImageIO.read(new File("src/test/resources/example2.jpg"))
     val example3 = ImageIO.read(new File("src/test/resources/example3.jpg"))
+
+    for {
+      example2DctHash <- PHash.dctHash(example2, 4)
+      example3DctHash <- PHash.dctHash(example3, 4)
+    } yield {
+      PHash.dctHashDistance(example2DctHash, example3DctHash) shouldEqual 37
+    }
+  }
+
+  "DCT hash" should "compare equal" in {
+    val example2 = ImageIO.read(new File("src/test/resources/example2.jpg"))
     val example4 = ImageIO.read(new File("src/test/resources/example4.jpg"))
 
     for {
-      example2DctHash <- PHash.dctHash(example2)
-      example3DctHash <- PHash.dctHash(example3)
-      example4DctHash <- PHash.dctHash(example4)
+      example2DctHash <- PHash.dctHash(example2, 4)
+      example4DctHash <- PHash.dctHash(example4, 4)
     } yield {
-      example2DctHash shouldEqual 1169849770
-      PHash.dctHashDistance(example2DctHash, example3DctHash) shouldEqual 37
       PHash.dctHashDistance(example2DctHash, example4DctHash) shouldEqual 1
     }
   }
 
   "PHash" should "compute marr hashes" in {
     val example2 = ImageIO.read(new File("src/test/resources/example2.jpg"))
+
+    for {
+      example2MarrHash <- PHash.marrHash(example2, 4)
+    } yield {
+      example2MarrHash shouldEqual Array(0, 0, 0, 56, 68, 200, 0, 0, 0, 0, 0, 0, 96, 0, 27, 36, 0, 0, 13, 166, 96, 141, 50, 219, 5, 50, 16, 184, 78, 17, 244, 194, 154, 106, 45, 11, 226, 228, 180, 147, 36, 208, 76, 209, 91, 18, 195, 173, 34, 52, 174, 25, 225, 146, 151, 39, 142, 143, 69, 165, 151, 227, 58, 19, 173, 48, 117, 36, 192, 212, 72, 78)
+    }
+  }
+
+  "Marr hashes" should "compare not equal" in {
+    val example2 = ImageIO.read(new File("src/test/resources/example2.jpg"))
     val example3 = ImageIO.read(new File("src/test/resources/example3.jpg"))
+
+    for {
+      example2MarrHash <- PHash.marrHash(example2, 4)
+      example3MarrHash <- PHash.marrHash(example3, 4)
+    } yield {
+      PHash.marrHashDistance(example2MarrHash, example3MarrHash) shouldEqual Some(0.3993055555555556)
+    }
+  }
+
+  "Marr hashes" should "compare equal" in {
+    val example2 = ImageIO.read(new File("src/test/resources/example2.jpg"))
     val example4 = ImageIO.read(new File("src/test/resources/example4.jpg"))
 
     for {
-      example2DctHash <- PHash.marrHash(example2)
-      example3DctHash <- PHash.marrHash(example3)
-      example4DctHash <- PHash.marrHash(example4)
+      example2MarrHash <- PHash.marrHash(example2, 4)
+      example4MarrHash <- PHash.marrHash(example4, 4)
     } yield {
-      example2DctHash shouldEqual Array(0, 0, 0, 56, 68, 200, 0, 0, 0, 0, 0, 0, 96, 0, 27, 36, 0, 0, 13, 166, 96, 141, 50, 219, 5, 50, 16, 184, 78, 17, 244, 194, 154, 106, 45, 11, 226, 228, 180, 147, 36, 208, 76, 209, 91, 18, 195, 173, 34, 52, 174, 25, 225, 146, 151, 39, 142, 143, 69, 165, 151, 227, 58, 19, 173, 48, 117, 36, 192, 212, 72, 78)
-      PHash.marrHashDistance(example2DctHash, example3DctHash) shouldEqual Some(0.3993055555555556)
-      PHash.marrHashDistance(example2DctHash, example4DctHash) shouldEqual Some(0.3576388888888889)
+      PHash.marrHashDistance(example2MarrHash, example4MarrHash) shouldEqual Some(0.3576388888888889)
     }
   }
 
   "PHash" should "compute radial hashes" in {
     val example2 = ImageIO.read(new File("src/test/resources/example2.jpg"))
-    val example3 = ImageIO.read(new File("src/test/resources/example3.jpg"))
-    val example4 = ImageIO.read(new File("src/test/resources/example4.jpg"))
 
     val example2DctHash = PHash.radialHash(example2)
-    val example3DctHash = PHash.radialHash(example3)
-    val example4DctHash = PHash.radialHash(example4)
 
-    example2DctHash shouldEqual Array(184, 168, 0, 200, 125, 184, 130, 181, 255, 199, 189, 220, 158, 163, 190, 194, 186, 169, 185, 182, 182, 193, 195, 175, 179, 187, 189, 186, 176, 181, 187, 190, 187, 182, 184, 180, 176, 188, 188, 180)
-    PHash.radialHashDistance(example2DctHash, example3DctHash) shouldEqual 0.8949662148335105
-    PHash.radialHashDistance(example2DctHash, example4DctHash) shouldEqual 0.9391380891489878
+    example2DctHash shouldEqual Array(196, 193, 0, 205, 90, 211, 195, 166, 255, 213, 189, 209, 188, 191, 177, 204, 180, 184, 192, 200, 189, 192, 196, 198, 196, 203, 201, 191, 189, 199, 195, 194, 199, 192, 196, 196, 198, 196, 193, 197)
+  }
+
+  "Radial hash" should "compare not equal" in {
+    val example2 = ImageIO.read(new File("src/test/resources/example2.jpg"))
+    val example3 = ImageIO.read(new File("src/test/resources/example3.jpg"))
+
+    val example2RadialHash = PHash.radialHash(example2)
+    val example3RadialHash = PHash.radialHash(example3)
+
+    PHash.radialHashDistance(example2RadialHash, example3RadialHash) shouldEqual 0.8707074916650039
+  }
+
+  "Radial hash" should "compare equal" in {
+    val example2 = ImageIO.read(new File("src/test/resources/example2.jpg"))
+    val example4 = ImageIO.read(new File("src/test/resources/example4.jpg"))
+
+    val example2RadialHash = PHash.radialHash(example2)
+    val example4RadialHash = PHash.radialHash(example4)
+
+    PHash.radialHashDistance(example2RadialHash, example4RadialHash) shouldEqual 0.9560809340807257
   }
 
   def approximatelyEqual(x: Float, y: Float, delta: Float): Boolean = {

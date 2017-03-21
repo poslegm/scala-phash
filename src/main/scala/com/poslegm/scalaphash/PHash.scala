@@ -10,12 +10,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 object PHash {
-  private lazy val Theta180 = Array.tabulate(180)(_ * Math.PI/180)
-  private lazy val TanTheta180 = Array.tabulate(180)(i => Math.tan(Theta180(i)))
-  
-  def dctHash(image: BufferedImage): Future[Long] = {
+  /**
+    * Computes DCT hash value of image
+    * (http://www.phash.org/docs/pubs/thesis_zauner.pdf / page 21)
+    * */
+  def dctHash(image: BufferedImage, parallelism: Int = 1): Future[Long] = {
     for {
-      processedImage <- image.makeGrayScale().makeConvolved()
+      processedImage <- image.makeGrayScale().makeConvolved(parallelism)
     } yield {
 
       val matrix = processedImage.resize(32, 32).toMatrix
@@ -34,6 +35,10 @@ object PHash {
     }
   }
 
+  /**
+    * Computes distance between two DCT hashes
+    * Less is better
+    * */
   def dctHashDistance(hash1: Long, hash2: Long): Long = {
     var x = hash1 ^ hash2
     val m1  = 0x5555555555555555L
@@ -46,21 +51,21 @@ object PHash {
     (x * h01) >> 56
   }
 
-  private def createDctMatrix(size: Int): Array[Array[Float]] = {
-    val c = Math.sqrt(2.0 / size).toFloat
-    Array.tabulate(size, size) {
-      case (_, 0) => 1 / Math.sqrt(size).toFloat
-      case (x, y) => c * Math.cos((Math.PI / 2 / size) * y * (2 * x + 1)).toFloat
-    }
-  }
-
-  // TODO resize CUBIC
-  def marrHash(image: BufferedImage, alpha: Int = 2, level: Int = 1): Future[Array[Int]] = {
-    val processed = image.makeGrayScale().makeBlurred(1).resize(512,512).equalize(256)
+  /**
+    * Computes Marr hash value of image
+    * (http://www.phash.org/docs/pubs/thesis_zauner.pdf / page 22)
+    * @param image image for hashing
+    * @param parallelism Futures count
+    * @param alpha coefficient for correlation kernel
+    * @param level coefficient for correlation kernel
+    * @return Future of array with hash
+    * */
+  def marrHash(image: BufferedImage, parallelism: Int = 1, alpha: Int = 2, level: Int = 1): Future[Array[Int]] = {
+    val processed = image.makeGrayScale().makeBlurred().resize(512,512).equalize(256)
 
     val kernel = createMarrKernel(alpha, level)
 
-    processed.correlate(kernel).map { fresp =>
+    processed.correlate(kernel, parallelism).map { fresp =>
       val normalized = fresp.normalize(0, 1)
       val blocks = Array.tabulate(31, 31) {
         case (x, y) => normalized.getRGB(x * 16, y * 16, 16, 16, null, 0, 16).sum.toFloat
@@ -95,6 +100,10 @@ object PHash {
     }
   }
 
+  /**
+    * Computes distance between two Marr hashes
+    * Less is better
+    * */
   def marrHashDistance(hash1: Array[Int], hash2: Array[Int]): Option[Double] = {
     if (hash1.length != hash2.length || hash1.isEmpty) {
       None
@@ -107,22 +116,30 @@ object PHash {
     }
   }
 
-  def radialHash(image: BufferedImage, sigma: Int = 1, gamma: Int = 1, projectionsCount: Int = 180): Array[Int] = {
+  /**
+    * Computes Radial hash value of image
+    * (http://www.phash.org/docs/pubs/thesis_zauner.pdf / page 24)
+    * @param image image for hashing
+    * @param projectionsCount number of projections to compute
+    * @return Array with hash
+    * */
+  def radialHash(image: BufferedImage, projectionsCount: Int = 180): Array[Int] = {
     val grayscaled = if (image.getColorModel.getColorSpace.getNumComponents >= 3) {
       image.makeGrayScale()
     } else {
       image
     }
 
-    val blurred = grayscaled.makeBlurred(sigma)
-
-    val processed = (blurred / blurred.max).pow(gamma)
-    val projections = calculate180Projections(image, projectionsCount)
+    val processed = grayscaled.makeBlurred().resize(128, 128)
+    val projections = calculateProjections(processed, projectionsCount)
     val features = calculateFeatures(projections)
-
-    calculateHash(features)
+    calculateRadialHash(features)
   }
 
+  /**
+    * Computes distance between two Radial hashes
+    * More is better
+    * */
   def radialHashDistance(hash1: Array[Int], hash2: Array[Int]): Double = {
     val meanX: Double = hash1.sum / hash2.length
     val meanY: Double = hash2.sum / hash2.length
@@ -142,54 +159,8 @@ object PHash {
     max
   }
 
-  private def calculate180Projections(image: BufferedImage, projectionsCount: Int): Projections = {
-    val maxSide = if (image.getWidth > image.getHeight) image.getWidth else  image.getHeight
-    val x_off = (image.getWidth >> 1) + (image.getWidth & 0x1) // round(image.getWidth/2) but only with integer operations
-    val y_off = (image.getHeight >> 1) + (image.getHeight & 0x1) // round(image.getHeight/2) but only with integer operations
-
-    val radonMap = Array.fill(projectionsCount, maxSide)(0)
-    val countPerLine = Array.fill(projectionsCount)(0)
-
-    for {
-      k <- 0 until (projectionsCount / 4 + 1)
-      alpha = TanTheta180(k)
-      x <- 0 until maxSide
-    } {
-      val y = alpha * (x - x_off)
-      val yd = Math.floor(y + (if (y >= 0) 0.5 else -0.5)).toInt
-      if ((yd + y_off >= 0) && (yd + y_off < image.getHeight) && (x < image.getWidth)) {
-        radonMap(k)(x) = image.getY(x, yd + y_off)
-        countPerLine(k) += 1
-      }
-      if ((yd + x_off >= 0) && (yd + x_off < image.getWidth) && (k != projectionsCount/4) && (x < image.getHeight)) {
-        radonMap(projectionsCount / 2 - k)(x) = image.getY(yd + x_off, x)
-        countPerLine(projectionsCount / 2 - k) += 1
-      }
-    }
-
-    var j= 0
-    for (k <- (3 * projectionsCount / 4) until projectionsCount) {
-      val alpha = TanTheta180(k)
-      for (x <- 0 until maxSide) {
-        val y = alpha * (x - x_off)
-        val yd = Math.floor(y + (if (y >= 0) 0.5 else -0.5)).toInt
-        if ((yd + y_off >= 0) && (yd + y_off < image.getHeight) && (x < image.getWidth)) {
-          radonMap(k)(x) = image.getY(x, yd + y_off)
-          countPerLine(k) += 1
-        }
-        if ((y_off - yd >= 0)
-          && (y_off - yd < image.getWidth)
-          && (2 * y_off - x >= 0)
-          && (2 * y_off - x < image.getHeight) && (k != 3 * projectionsCount / 4)) {
-          radonMap(k - j)(x) = image.getY(-yd + y_off, -(x - y_off) + y_off)
-          countPerLine(k - j) += 1
-        }
-      }
-      j += 2
-    }
-
-    Projections(countPerLine, radonMap)
-  }
+  private def calculateProjections(image: BufferedImage, projectionsCount: Int): Projections =
+    new Projections(image, projectionsCount)
 
   private def calculateFeatures(projections: Projections): Array[Double] = {
     val features = Array.fill(projections.projectionsCount)(0)
@@ -216,7 +187,7 @@ object PHash {
     features.map(f => (f - mean) / x)
   }
 
-  private def calculateHash(features: Array[Double]): Array[Int] = {
+  private def calculateRadialHash(features: Array[Double]): Array[Int] = {
     val coeffsCount = 40
 
     var max = 0.0
@@ -260,6 +231,13 @@ object PHash {
     }
   }
 
+  private def createDctMatrix(size: Int): Array[Array[Float]] = {
+    val c = Math.sqrt(2.0 / size).toFloat
+    Array.tabulate(size, size) {
+      case (_, 0) => 1 / Math.sqrt(size).toFloat
+      case (x, y) => c * Math.cos((Math.PI / 2 / size) * y * (2 * x + 1)).toFloat
+    }
+  }
 
   private def findMedian(floats: Seq[Float]): Float = floats match {
     case xs if xs.length % 2 == 0 =>
@@ -290,7 +268,65 @@ object PHash {
   }
 }
 
-case class Projections(countPerLine: Array[Int], projections: Array[Array[Int]]) {
-  def projectionsCount: Int = countPerLine.length
+class Projections(image: BufferedImage, val projectionsCount: Int) {
+  private lazy val Theta180 = Array.tabulate(180)(_ * Math.PI/180)
+  private lazy val TanTheta180 = Array.tabulate(180)(i => Math.tan(Theta180(i)))
+
+  private lazy val maxSide = if (image.getWidth > image.getHeight) image.getWidth else image.getHeight
+  private lazy val xOff = (image.getWidth >> 1) + (image.getWidth & 0x1) // round(image.getWidth/2) but only with integer operations
+  private lazy val yOff = (image.getHeight >> 1) + (image.getHeight & 0x1) // round(image.getHeight/2) but only with integer operations
+
+  val countPerLine: Array[Int] = Array.fill(projectionsCount)(0)
+  val projections: Array[Array[Int]] = Array.fill(projectionsCount, maxSide)(0)
+
+  compute()
+
   def maxDimension: Int = projections(0).length
+
+  private def compute(): Unit = {
+    computeFirstQuarter()
+    computeLastQuarter()
+  }
+
+  private def computeFirstQuarter(): Unit = {
+    for {
+      k <- 0 until (projectionsCount / 4 + 1)
+      alpha = TanTheta180(k)
+      x <- 0 until maxSide
+    } {
+      val y = alpha * (x - xOff)
+      val yd = Math.floor(y + (if (y >= 0) 0.5 else -0.5)).toInt
+      if ((yd + yOff >= 0) && (yd + yOff < image.getHeight) && (x < image.getWidth)) {
+        projections(k)(x) = image.getY(x, yd + yOff)
+        countPerLine(k) += 1
+      }
+      if ((yd + xOff >= 0) && (yd + xOff < image.getWidth) && (k != projectionsCount/4) && (x < image.getHeight)) {
+        projections(projectionsCount / 2 - k)(x) = image.getY(yd + xOff, x)
+        countPerLine(projectionsCount / 2 - k) += 1
+      }
+    }
+  }
+
+  private def computeLastQuarter(): Unit = {
+    var j = 0
+    for (k <- (3 * projectionsCount / 4) until projectionsCount) {
+      val alpha = TanTheta180(k)
+      for (x <- 0 until maxSide) {
+        val y = alpha * (x - xOff)
+        val yd = Math.floor(y + (if (y >= 0) 0.5 else -0.5)).toInt
+        if ((yd + yOff >= 0) && (yd + yOff < image.getHeight) && (x < image.getWidth)) {
+          projections(k)(x) = image.getY(x, yd + yOff)
+          countPerLine(k) += 1
+        }
+        if ((yOff - yd >= 0)
+          && (yOff - yd < image.getWidth)
+          && (2 * yOff - x >= 0)
+          && (2 * yOff - x < image.getHeight) && (k != 3 * projectionsCount / 4)) {
+          projections(k - j)(x) = image.getY(-yd + yOff, -(x - yOff) + yOff)
+          countPerLine(k - j) += 1
+        }
+      }
+      j += 2
+    }
+  }
 }

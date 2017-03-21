@@ -25,8 +25,8 @@ class ImageUtilsTest extends AsyncFlatSpec with Matchers with PrivateMethodTeste
 
   "MakeConvolved" should "work correct" in {
     for {
-      a <- ImageIO.read(new File("src/test/resources/example1.jpg")).makeGrayScale().makeConvolved()
-      b <- ImageIO.read(new File("src/test/resources/example1.jpg")).makeGrayScale().makeConvolved()
+      a <- ImageIO.read(new File("src/test/resources/example1.jpg")).makeGrayScale().makeConvolved(4)
+      b <- ImageIO.read(new File("src/test/resources/example1.jpg")).makeGrayScale().makeConvolved(4)
     } yield {
       ImageIO.write(a, "jpg", new File("src/test/resources/convolved-example1.jpg"))
       a.isEqualTo(b) should be(true)
@@ -34,8 +34,8 @@ class ImageUtilsTest extends AsyncFlatSpec with Matchers with PrivateMethodTeste
   }
 
   "MakeBlured" should "work correct" in {
-    val a = ImageIO.read(new File("src/test/resources/example1.jpg")).makeBlurred(1)
-    val b = ImageIO.read(new File("src/test/resources/example1.jpg")).makeBlurred(1)
+    val a = ImageIO.read(new File("src/test/resources/example1.jpg")).makeBlurred()
+    val b = ImageIO.read(new File("src/test/resources/example1.jpg")).makeBlurred()
 
     ImageIO.write(a, "jpg", new File("src/test/resources/blured-example1.jpg"))
 
