@@ -11,7 +11,7 @@ val img2rad = PHash.radialHash(img2)
 println(PHash.radialHashDistance(img1rad, img2rad))
 ```
 
-Radial distance is more when images are similar. 
+Radial distance is more when images are similar.  
 DCT and marr distances are less when images are similar. 
 
 <img width='200px' src='https://github.com/poslegm/scala-phash/blob/master/src/test/resources/example2.jpg'>
@@ -34,7 +34,7 @@ marr: 0.4947916666666667
 
 # Warning
 My results is not compatible with original pHash. Use original library if you have an opportunity.  
-Also, it works very slow compared with c++ version.
+Also, it works **much** slower than c++ version.
 # Thanks
 * [pHash](http://phash.org) / [https://github.com/clearscene/pHash](https://github.com/clearscene/pHash) 
 * [jphash](https://github.com/pragone/jphash)
