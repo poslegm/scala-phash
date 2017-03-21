@@ -2,11 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="008c3dac-6e4f-40f3-8dda-88eca4a5cc2c" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/resources/1.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/resources/2.jpg" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/com/poslegm/scalaphash/ImageUtils.scala" afterPath="$PROJECT_DIR$/src/main/scala/com/poslegm/scalaphash/ImageUtils.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/com/poslegm/scalaphash/PHash.scala" afterPath="$PROJECT_DIR$/src/main/scala/com/poslegm/scalaphash/PHash.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/scala/com/poslegm/scalaphash/ImageUtilsTest.scala" afterPath="$PROJECT_DIR$/src/test/scala/com/poslegm/scalaphash/ImageUtilsTest.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/scala/com/poslegm/scalaphash/PHashTest.scala" afterPath="$PROJECT_DIR$/src/test/scala/com/poslegm/scalaphash/PHashTest.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build.sbt" afterPath="$PROJECT_DIR$/build.sbt" />
     </list>
     <ignored path="$PROJECT_DIR$/project/project/target/" />
     <ignored path="$PROJECT_DIR$/project/target/" />
@@ -39,8 +38,8 @@
       <file leaf-file-name="PHashTest.scala" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/scala/com/poslegm/scalaphash/PHashTest.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-5264">
-              <caret line="8" column="4" lean-forward="false" selection-start-line="8" selection-start-column="4" selection-end-line="121" selection-end-column="3" />
+            <state relative-caret-position="584">
+              <caret line="131" column="20" lean-forward="false" selection-start-line="131" selection-start-column="20" selection-end-line="131" selection-end-column="20" />
               <folding>
                 <element signature="e#32#51#0" expanded="true" />
               </folding>
@@ -48,14 +47,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="PHash.scala" pinned="false" current-in-tab="true">
+      <file leaf-file-name="PHash.scala" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/scala/com/poslegm/scalaphash/PHash.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1034">
-              <caret line="122" column="66" lean-forward="false" selection-start-line="122" selection-start-column="66" selection-end-line="122" selection-end-column="66" />
+            <state relative-caret-position="1400">
+              <caret line="55" column="55" lean-forward="true" selection-start-line="55" selection-start-column="7" selection-end-line="55" selection-end-column="55" />
               <folding>
                 <element signature="e#32#67#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="build.sbt" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/build.sbt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="112">
+              <caret line="2" column="28" lean-forward="false" selection-start-line="2" selection-start-column="28" selection-end-line="2" selection-end-column="28" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -64,7 +73,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/scala/com/poslegm/scalaphash/ImageUtils.scala">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="530">
-              <caret line="199" column="88" lean-forward="false" selection-start-line="199" selection-start-column="88" selection-end-line="199" selection-end-column="88" />
+              <caret line="197" column="88" lean-forward="false" selection-start-line="197" selection-start-column="88" selection-end-line="197" selection-end-column="88" />
               <folding>
                 <element signature="e#32#55#0" expanded="true" />
               </folding>
@@ -75,8 +84,8 @@
       <file leaf-file-name="ImageUtilsTest.scala" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/scala/com/poslegm/scalaphash/ImageUtilsTest.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="976">
-              <caret line="57" column="0" lean-forward="false" selection-start-line="57" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
+            <state relative-caret-position="2632">
+              <caret line="47" column="0" lean-forward="true" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
               <folding>
                 <element signature="e#32#51#0" expanded="true" />
               </folding>
@@ -132,10 +141,10 @@
         <option value="/usr/lib/jvm/java-8-openjdk/src.zip!/java/awt/image/WritableRaster.java" />
         <option value="/usr/lib/jvm/java-8-openjdk/src.zip!/java/awt/image/DataBufferByte.java" />
         <option value="/usr/lib/jvm/java-8-openjdk/src.zip!/java/awt/image/SampleModel.java" />
-        <option value="$PROJECT_DIR$/build.sbt" />
         <option value="$PROJECT_DIR$/src/test/scala/com/poslegm/scalaphash/ImageUtilsTest.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/com/poslegm/scalaphash/ImageUtils.scala" />
         <option value="$PROJECT_DIR$/src/test/scala/com/poslegm/scalaphash/PHashTest.scala" />
+        <option value="$PROJECT_DIR$/build.sbt" />
         <option value="$PROJECT_DIR$/src/main/scala/com/poslegm/scalaphash/PHash.scala" />
       </list>
     </option>
@@ -292,7 +301,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../Education/BMSTU/FuncProg/Lab2" />
-    <property name="SearchEverywhereHistoryKey" value="ByteIn&#9;PSI&#9;JAVA://sun.awt.image.ByteInterleavedRaster" />
+    <property name="SearchEverywhereHistoryKey" value="Phash&#9;FILE&#9;file:///home/poslegm/Yandex.Disk/Programming/OpenSource/scala-phash/src/test/scala/com/poslegm/scalaphash/PHashTest.scala&#10;ByteIn&#9;PSI&#9;JAVA://sun.awt.image.ByteInterleavedRaster" />
   </component>
   <component name="RecentsManager">
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
@@ -574,7 +583,7 @@
     </list>
   </component>
   <component name="SbtLocalSettings">
-    <option name="lastUpdateTimestamp" value="1489951163277" />
+    <option name="lastUpdateTimestamp" value="1490107241676" />
     <option name="availableProjects">
       <map>
         <entry>
@@ -604,7 +613,7 @@
         <entry key="$PROJECT_DIR$/../../Education/Coursera/ParallelScala/week2" value="1465226482000" />
         <entry key="$PROJECT_DIR$/../../Education/Coursera/ParallelScala/week3" value="1465227434000" />
         <entry key="$PROJECT_DIR$/../../Education/Coursera/ParallelScala/week4" value="1475654230000" />
-        <entry key="$PROJECT_DIR$" value="1489951126308" />
+        <entry key="$PROJECT_DIR$" value="1490107231208" />
       </map>
     </option>
     <option name="externalProjectsViewState">
@@ -646,7 +655,14 @@
       <option name="project" value="LOCAL" />
       <updated>1489956193497</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Refactoring and small changes in radial hash">
+      <created>1490103763337</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1490103763337</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -690,7 +706,8 @@
     <MESSAGE value="Added Marr hash" />
     <MESSAGE value="Added jvm opts&#10;Cleaned test images" />
     <MESSAGE value="Added radial hash" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added radial hash" />
+    <MESSAGE value="Refactoring and small changes in radial hash" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactoring and small changes in radial hash" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -860,14 +877,6 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/build.sbt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="3" column="0" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar:///usr/lib/jvm/java-8-openjdk/src.zip!/java/awt/Image.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1130">
@@ -950,30 +959,48 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/scala/com/poslegm/scalaphash/ImageUtilsTest.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="976">
-          <caret line="57" column="0" lean-forward="false" selection-start-line="57" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
-          <folding>
-            <element signature="e#32#51#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/com/poslegm/scalaphash/ImageUtils.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="530">
-          <caret line="199" column="88" lean-forward="false" selection-start-line="199" selection-start-column="88" selection-end-line="199" selection-end-column="88" />
+          <caret line="197" column="88" lean-forward="false" selection-start-line="197" selection-start-column="88" selection-end-line="197" selection-end-column="88" />
           <folding>
             <element signature="e#32#55#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="jar://$USER_HOME$/.sbt/boot/scala-2.10.6/org.scala-sbt/sbt/0.13.13/main-0.13.13.jar!/sbt/Keys.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2734">
+          <caret line="164" column="6" lean-forward="false" selection-start-line="164" selection-start-column="6" selection-end-line="164" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/scala/com/poslegm/scalaphash/ImageUtilsTest.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2632">
+          <caret line="47" column="0" lean-forward="true" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
+          <folding>
+            <element signature="e#32#51#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/resources/2.jpg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/resources/1.jpg">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/scala/com/poslegm/scalaphash/PHashTest.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-5264">
-          <caret line="8" column="4" lean-forward="false" selection-start-line="8" selection-start-column="4" selection-end-line="121" selection-end-column="3" />
+        <state relative-caret-position="584">
+          <caret line="131" column="20" lean-forward="false" selection-start-line="131" selection-start-column="20" selection-end-line="131" selection-end-column="20" />
           <folding>
             <element signature="e#32#51#0" expanded="true" />
           </folding>
@@ -982,11 +1009,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/com/poslegm/scalaphash/PHash.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1034">
-          <caret line="122" column="66" lean-forward="false" selection-start-line="122" selection-start-column="66" selection-end-line="122" selection-end-column="66" />
+        <state relative-caret-position="1400">
+          <caret line="55" column="55" lean-forward="true" selection-start-line="55" selection-start-column="7" selection-end-line="55" selection-end-column="55" />
           <folding>
             <element signature="e#32#67#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.sbt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="112">
+          <caret line="2" column="28" lean-forward="false" selection-start-line="2" selection-start-column="28" selection-end-line="2" selection-end-column="28" />
+          <folding />
         </state>
       </provider>
     </entry>
