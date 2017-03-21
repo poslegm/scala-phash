@@ -249,7 +249,6 @@ object ImageUtils {
             case x => x
           }
       } else {
-        println(image.getRaster.getTransferType)
         image.getRGB(0, 0, image.getWidth, image.getHeight, null, 0, image.getWidth).flatMap { p =>
           val pixel = new Color(p)
           Seq(pixel.getRed, pixel.getGreen, pixel.getBlue)
