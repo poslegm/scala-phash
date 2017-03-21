@@ -30,30 +30,11 @@ object ImageUtils {
         return image
       }
 
-      val grayScaledImage = new BufferedImage(
-        image.getWidth,
-        image.getHeight,
-        BufferedImage.TYPE_BYTE_GRAY
-      )
-
-      val temp = new BufferedImage(image.getWidth, image.getHeight, BufferedImage.TYPE_INT_RGB)
-
-      coordinates.foreach {
-        case (x, y) =>
-          val pixel = new Color(image.getRGB(x, y))
-          val (r, g, b) = (pixel.getRed, pixel.getGreen, pixel.getBlue)
-
-          val Y = cut(((66 * r + 129 * g + 25 * b + 128) / 256.0f + 16).toInt, 0, 255)
-          val newPixel = (Y << 16) | (Y << 8) | Y
-
-          temp.setRGB(x, y, newPixel)
+      val newPixels = for (i <- flattenPixels.indices by 3) yield {
+        val (r, g, b) = (flattenPixels(i + 2), flattenPixels(i + 1), flattenPixels(i))
+        cut(((66 * r + 129 * g + 25 * b + 128) / 256.0f + 16).toInt, 0, 255)
       }
-
-      val g = grayScaledImage.getGraphics
-      g.drawImage(temp, 0, 0, null)
-      g.dispose()
-
-      grayScaledImage
+      withNewFlattenPixels(newPixels.toArray, BufferedImage.TYPE_BYTE_GRAY)
     }
 
     /**
@@ -274,8 +255,8 @@ object ImageUtils {
       * @param flattenPixels Array created by createFlattenPixelsArray (may be modified)
       * @return new BufferedImage
       * */
-    private def withNewFlattenPixels[T](flattenPixels: Array[T])(implicit num: Numeric[T]): BufferedImage = {
-      val temp = new BufferedImage(image.getWidth(), image.getHeight(), image.getType)
+    private def withNewFlattenPixels[T](flattenPixels: Array[T], imageType: Int = image.getType)(implicit num: Numeric[T]): BufferedImage = {
+      val temp = new BufferedImage(image.getWidth(), image.getHeight(), imageType)
       temp.getRaster.setDataElements(0, 0, image.getWidth(), image.getHeight(), flattenPixels.map {
         case x if num.toFloat(x) > 127 => (num.toFloat(x) - 256).toByte
         case x => num.toFloat(x).toByte

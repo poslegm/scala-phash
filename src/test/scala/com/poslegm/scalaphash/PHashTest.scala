@@ -75,6 +75,18 @@ class PHashTest extends AsyncFlatSpec with Matchers with PrivateMethodTester {
     }
   }
 
+  "DCT hash" should "compare dog and cat" in {
+    val dog = ImageIO.read(new File("src/test/resources/1.jpg"))
+    val cat = ImageIO.read(new File("src/test/resources/2.jpg"))
+
+    for {
+      dogDctHash <- PHash.dctHash(dog, 4)
+      catDctHash <- PHash.dctHash(cat, 4)
+    } yield {
+      PHash.dctHashDistance(dogDctHash, catDctHash) shouldEqual 36
+    }
+  }
+
   "DCT hash" should "compare equal" in {
     val example2 = ImageIO.read(new File("src/test/resources/example2.jpg"))
     val example4 = ImageIO.read(new File("src/test/resources/example4.jpg"))
@@ -93,7 +105,7 @@ class PHashTest extends AsyncFlatSpec with Matchers with PrivateMethodTester {
     for {
       example2MarrHash <- PHash.marrHash(example2, 4)
     } yield {
-      example2MarrHash shouldEqual Array(0, 0, 0, 56, 68, 200, 0, 0, 0, 0, 0, 0, 96, 0, 27, 36, 0, 0, 13, 166, 96, 141, 50, 219, 5, 50, 16, 184, 78, 17, 244, 194, 154, 106, 45, 11, 226, 228, 180, 147, 36, 208, 76, 209, 91, 18, 195, 173, 34, 52, 174, 25, 225, 146, 151, 39, 142, 143, 69, 165, 151, 227, 58, 19, 173, 48, 117, 36, 192, 212, 72, 78)
+      example2MarrHash shouldEqual Array(0, 0, 0, 42, 68, 200, 0, 0, 0, 0, 0, 8, 96, 0, 27, 32, 0, 0, 5, 166, 0, 129, 54, 194, 21, 151, 208, 48, 12, 72, 45, 150, 146, 104, 108, 225, 141, 100, 148, 147, 164, 201, 96, 144, 227, 67, 134, 76, 96, 244, 166, 79, 209, 13, 35, 140, 207, 192, 242, 158, 97, 192, 89, 131, 4, 212, 241, 116, 220, 21, 76, 92)
     }
   }
 
@@ -105,7 +117,7 @@ class PHashTest extends AsyncFlatSpec with Matchers with PrivateMethodTester {
       example2MarrHash <- PHash.marrHash(example2, 4)
       example3MarrHash <- PHash.marrHash(example3, 4)
     } yield {
-      PHash.marrHashDistance(example2MarrHash, example3MarrHash) shouldEqual Some(0.3993055555555556)
+      PHash.marrHashDistance(example2MarrHash, example3MarrHash) shouldEqual Some(0.3732638888888889)
     }
   }
 
@@ -117,7 +129,7 @@ class PHashTest extends AsyncFlatSpec with Matchers with PrivateMethodTester {
       example2MarrHash <- PHash.marrHash(example2, 4)
       example4MarrHash <- PHash.marrHash(example4, 4)
     } yield {
-      PHash.marrHashDistance(example2MarrHash, example4MarrHash) shouldEqual Some(0.3576388888888889)
+      PHash.marrHashDistance(example2MarrHash, example4MarrHash) shouldEqual Some(0.359375)
     }
   }
 
@@ -126,7 +138,7 @@ class PHashTest extends AsyncFlatSpec with Matchers with PrivateMethodTester {
 
     val example2DctHash = PHash.radialHash(example2)
 
-    example2DctHash shouldEqual Array(196, 193, 0, 205, 90, 211, 195, 166, 255, 213, 189, 209, 188, 191, 177, 204, 180, 184, 192, 200, 189, 192, 196, 198, 196, 203, 201, 191, 189, 199, 195, 194, 199, 192, 196, 196, 198, 196, 193, 197)
+    example2DctHash shouldEqual Array(195, 192, 0, 205, 89, 209, 194, 165, 255, 212, 188, 208, 186, 190, 176, 203, 180, 182, 190, 200, 187, 191, 195, 197, 195, 202, 200, 190, 188, 198, 194, 193, 198, 191, 194, 194, 197, 195, 193, 196)
   }
 
   "Radial hash" should "compare not equal" in {
@@ -136,7 +148,7 @@ class PHashTest extends AsyncFlatSpec with Matchers with PrivateMethodTester {
     val example2RadialHash = PHash.radialHash(example2)
     val example3RadialHash = PHash.radialHash(example3)
 
-    PHash.radialHashDistance(example2RadialHash, example3RadialHash) shouldEqual 0.8707074916650039
+    PHash.radialHashDistance(example2RadialHash, example3RadialHash) shouldEqual 0.8630427572869724
   }
 
   "Radial hash" should "compare equal" in {
@@ -146,7 +158,7 @@ class PHashTest extends AsyncFlatSpec with Matchers with PrivateMethodTester {
     val example2RadialHash = PHash.radialHash(example2)
     val example4RadialHash = PHash.radialHash(example4)
 
-    PHash.radialHashDistance(example2RadialHash, example4RadialHash) shouldEqual 0.9560809340807257
+    PHash.radialHashDistance(example2RadialHash, example4RadialHash) shouldEqual 0.9544747673204416
   }
 
   def approximatelyEqual(x: Float, y: Float, delta: Float): Boolean = {

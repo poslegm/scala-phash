@@ -1,6 +1,7 @@
 package com.poslegm.scalaphash
 
 import java.io.File
+import java.util.Calendar
 import javax.imageio.ImageIO
 
 import com.poslegm.scalaphash.ImageUtils._
@@ -19,7 +20,6 @@ class ImageUtilsTest extends AsyncFlatSpec with Matchers with PrivateMethodTeste
     val b = ImageIO.read(new File("src/test/resources/example1.jpg")).makeGrayScale()
 
     ImageIO.write(a, "jpg", new File("src/test/resources/grayscaled-example1.jpg"))
-
     a.isEqualTo(b) should be (true)
   }
 

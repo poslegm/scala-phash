@@ -10,6 +10,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 object PHash {
+  private lazy val dctMatrix = createDctMatrix(32)
+  private lazy val dctMatrixTransposed = dctMatrix.transpose
   /**
     * Computes DCT hash value of image
     * (http://www.phash.org/docs/pubs/thesis_zauner.pdf / page 21)
