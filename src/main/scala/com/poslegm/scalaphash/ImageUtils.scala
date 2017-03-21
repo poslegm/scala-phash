@@ -236,17 +236,25 @@ object ImageUtils {
       * @return Array with channels' values
       * */
     private def createFlattenPixelsArray(): Array[Int] = {
-      image.getRaster
-        .getDataBuffer
-        .asInstanceOf[DataBufferByte]
-        .getData
-        .grouped(image.getRaster.getNumDataElements)
-        .flatMap(_.reverse) // because origin getData is not compatible with Raster.setDataElements
-        .toArray
-        .map {
-          case x if x < 0 => x + 256 // because scala have not unsigned byte
-          case x => x
+      if (image.getRaster.getTransferType == 0) {
+        image.getRaster
+          .getDataBuffer
+          .asInstanceOf[DataBufferByte]
+          .getData
+          .grouped(image.getRaster.getNumDataElements)
+          .flatMap(_.reverse) // because origin getData is not compatible with Raster.setDataElements
+          .toArray
+          .map {
+            case x if x < 0 => x + 256 // because scala have not unsigned byte
+            case x => x
+          }
+      } else {
+        println(image.getRaster.getTransferType)
+        image.getRGB(0, 0, image.getWidth, image.getHeight, null, 0, image.getWidth).flatMap { p =>
+          val pixel = new Color(p)
+          Seq(pixel.getRed, pixel.getGreen, pixel.getBlue)
         }
+      }
     }
 
     /**
