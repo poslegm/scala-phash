@@ -2,12 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="008c3dac-6e4f-40f3-8dda-88eca4a5cc2c" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/jars/2.11/scala-phash_2.11-1.0.jar" afterPath="$PROJECT_DIR$/jars/2.11/scala-phash_2.11-1.0.jar" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/jars/2.12/scala-phash_2.12-1.0.jar" afterPath="$PROJECT_DIR$/jars/2.12/scala-phash_2.12-1.0.jar" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/com/poslegm/scalaphash/PHash.scala" afterPath="$PROJECT_DIR$/src/main/scala/com/poslegm/scalaphash/PHash.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/com/poslegm/scalaphash/PixelMatrix.scala" afterPath="$PROJECT_DIR$/src/main/scala/com/poslegm/scalaphash/PixelMatrix.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/scala/com/poslegm/scalaphash/ImageUtilsTest.scala" afterPath="$PROJECT_DIR$/src/test/scala/com/poslegm/scalaphash/ImageUtilsTest.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/scala/com/poslegm/scalaphash/PHashTest.scala" afterPath="$PROJECT_DIR$/src/test/scala/com/poslegm/scalaphash/PHashTest.scala" />
     </list>
     <ignored path="$PROJECT_DIR$/project/project/target/" />
     <ignored path="$PROJECT_DIR$/project/target/" />
@@ -74,8 +72,8 @@
       <file leaf-file-name="README.md" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="730">
-              <caret line="15" column="15" lean-forward="false" selection-start-line="15" selection-start-column="15" selection-end-line="15" selection-end-column="15" />
+            <state relative-caret-position="168">
+              <caret line="3" column="143" lean-forward="false" selection-start-line="3" selection-start-column="143" selection-end-line="3" selection-end-column="143" />
               <folding />
             </state>
           </provider>
@@ -713,7 +711,14 @@
       <option name="project" value="LOCAL" />
       <updated>1492552381068</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Refactoring">
+      <created>1492642427327</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1492642427327</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TodoView">
@@ -802,7 +807,8 @@
     <MESSAGE value="Fixed bug with data reading" />
     <MESSAGE value="Added jar files and fixed small bug" />
     <MESSAGE value="Colossal refactoring and optimization" />
-    <option name="LAST_COMMIT_MESSAGE" value="Colossal refactoring and optimization" />
+    <MESSAGE value="Refactoring" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactoring" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1162,8 +1168,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="730">
-          <caret line="15" column="15" lean-forward="false" selection-start-line="15" selection-start-column="15" selection-end-line="15" selection-end-column="15" />
+        <state relative-caret-position="168">
+          <caret line="3" column="143" lean-forward="false" selection-start-line="3" selection-start-column="143" selection-end-line="3" selection-end-column="143" />
           <folding />
         </state>
       </provider>
