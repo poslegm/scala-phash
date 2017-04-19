@@ -112,6 +112,15 @@ class PHashTest extends FlatSpec with Matchers with PrivateMethodTester {
     PHash.marrHashDistance(example2MarrHash, example4MarrHash) shouldEqual Some(0.3315972222222222)
   }
 
+  "Marr hashes" should "compare dog and cat" in {
+    val dog = ImageIO.read(new File("src/test/resources/1.jpg"))
+    val cat = ImageIO.read(new File("src/test/resources/2.jpg"))
+
+    val dogMarrHash = PHash.marrHash(dog)
+    val catMarrHash = PHash.marrHash(cat)
+    PHash.marrHashDistance(dogMarrHash, catMarrHash) shouldEqual Some(0.4947916666666667)
+  }
+
   "PHash" should "compute radial hashes" in {
     val example2 = ImageIO.read(new File("src/test/resources/example2.jpg"))
 
@@ -138,6 +147,16 @@ class PHashTest extends FlatSpec with Matchers with PrivateMethodTester {
     val example4RadialHash = PHash.radialHash(example4)
 
     PHash.radialHashDistance(example2RadialHash, example4RadialHash) shouldEqual 0.9538751316650709
+  }
+
+  "Radial hash" should "compare dog and cat" in {
+    val dog = ImageIO.read(new File("src/test/resources/1.jpg"))
+    val cat = ImageIO.read(new File("src/test/resources/2.jpg"))
+
+    val dogRadialHash = PHash.radialHash(dog)
+    val catRadialHash = PHash.radialHash(cat)
+
+    PHash.radialHashDistance(dogRadialHash, catRadialHash) shouldEqual 0.36438994709451805
   }
 
   def approximatelyEqual(x: Float, y: Float, delta: Float): Boolean = {

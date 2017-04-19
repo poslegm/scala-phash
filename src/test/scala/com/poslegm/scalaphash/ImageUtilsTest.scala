@@ -38,12 +38,12 @@ class ImageUtilsTest extends FlatSpec with Matchers with PrivateMethodTester {
   }
 
   "Resize" should "work correct" in {
-    val a = PixelMatrix(ImageIO.read(new File("src/test/resources/example1.jpg")))
-    val b = PixelMatrix(ImageIO.read(new File("src/test/resources/example1.jpg")))
+    val a = PixelMatrix(ImageIO.read(new File("src/test/resources/example1.jpg"))).resize(32, 32)
+    val b = PixelMatrix(ImageIO.read(new File("src/test/resources/example1.jpg"))).resize(32, 32)
 
-    ImageIO.write(a.resize(32, 32).toBufferedImage(), "jpg", new File("src/test/resources/resized-example1.jpg"))
+    ImageIO.write(a.toBufferedImage(), "jpg", new File("src/test/resources/resized-example1.jpg"))
 
-    a.resize(32, 32).isEqualTo(b.resize(32, 32)) should be (true)
+    a.isEqualTo(b) should be (true)
   }
 
   "Equalize" should "work correct" in {

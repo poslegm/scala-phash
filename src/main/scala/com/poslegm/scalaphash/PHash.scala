@@ -11,6 +11,8 @@ object PHash {
   /**
     * Computes DCT hash value of image
     * (http://www.phash.org/docs/pubs/thesis_zauner.pdf / page 21)
+    * @param image image for hashing
+    * @return 64-bit hash value
     * */
   def dctHash(image: BufferedImage): Long = {
     val processedImage = PixelMatrix(image).makeGrayScale().makeConvolved()
@@ -57,7 +59,7 @@ object PHash {
     val fresp = processed.correlate(kernel)
     val normalized = fresp.normalize(0, 1)
     val blocks = Array.tabulate(31, 31) {
-      case (x, y) => normalized.getRGB(x * 16, y * 16, 16, 16).sum.toFloat
+      case (x, y) => normalized.getY(x * 16, y * 16, 16, 16).sum.toFloat
     }
 
     var hashByte, onesCount, zerosCount, bitIndex = 0
