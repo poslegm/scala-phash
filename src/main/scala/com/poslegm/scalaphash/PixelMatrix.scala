@@ -8,7 +8,7 @@ import com.jhlabs.image.GaussianFilter
 
 import scala.collection.mutable.ArrayBuffer
 
-case class PixelMatrix private (private val flattenPixels: Array[Float],
+private[scalaphash] case class PixelMatrix private (private val flattenPixels: Array[Float],
                                 private val pixelElementsCount: Int,
                                 width: Int,
                                 height: Int,
@@ -241,7 +241,7 @@ case class PixelMatrix private (private val flattenPixels: Array[Float],
     * Works only with YCbCr!
     * (https://refactoring.com/catalog/replaceMethodWithMethodObject.html)
     * */
-  class Correlation(image: PixelMatrix, kernel: Array[Array[Float]]) {
+  private[scalaphash] class Correlation(image: PixelMatrix, kernel: Array[Array[Float]]) {
     private val res = Array.fill(image.width * image.height * image.pixelElementsCount)(0f)
 
     private val mx1, my1 = kernel.length / 2
@@ -293,7 +293,7 @@ case class PixelMatrix private (private val flattenPixels: Array[Float],
 
 }
 
-object PixelMatrix {
+private[scalaphash] object PixelMatrix {
   def apply(image: BufferedImage): PixelMatrix = {
     new PixelMatrix(
       flattenPixels = createFlattenPixelsArray(image),
