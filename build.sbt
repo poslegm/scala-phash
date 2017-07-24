@@ -1,6 +1,6 @@
 name := "scala-phash"
 
-organization := "com.poslegm"
+organization := "com.github.poslegm"
 
 version := "1.0"
 

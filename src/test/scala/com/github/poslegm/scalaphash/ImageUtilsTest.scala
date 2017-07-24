@@ -1,4 +1,4 @@
-package com.poslegm.scalaphash
+package com.github.poslegm.scalaphash
 
 import java.io.File
 import javax.imageio.ImageIO

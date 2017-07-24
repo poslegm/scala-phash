@@ -6,7 +6,7 @@ Original pHash uses CImg library for image processing but I could not find CImg 
 My library implements three Perceptual Hashing algorithms: Radial Hash, DCT hash and Marr hash. [More info about it](http://www.phash.org/docs/pubs/thesis_zauner.pdf).
 
 ```scala
-import com.poslegm.scalaphash.PHash
+import com.github.poslegm.scalaphash.PHash
 import javax.imageio.ImageIO
 
 val img1 = ImageIO.read(new File("img1.jpg"))

@@ -1,4 +1,4 @@
-package com.poslegm.scalaphash
+package com.github.poslegm.scalaphash
 
 import java.awt.color.ColorSpace
 import java.awt.image._
