@@ -8,3 +8,4 @@ src/test/resources/convolved-*
 src/test/resources/equalized-*
 src/test/resources/grayscaled-*
 src/test/resources/resized-*
+src/test/resources/processed*
