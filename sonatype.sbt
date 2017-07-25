@@ -1,4 +1,4 @@
-sonatypeProfileName := "poslegm"
+sonatypeProfileName := "com.github.poslegm"
 
 publishMavenStyle := true
 
@@ -17,9 +17,11 @@ developers := List(
   Developer(id="poslegm", name="Mikhail Chugunkov", email="poslegm@gmail.com", url=url("https://github.com/poslegm"))
 )
 
-publishTo := Some(
-  if (isSnapshot.value)
-    Opts.resolver.sonatypeSnapshots
-  else
-    Opts.resolver.sonatypeStaging
-)
+publishTo := {
+  val nexus = "https://oss.sonatype.org/"
+  if (isSnapshot.value) {
+    Some("snapshots" at nexus + "content/repositories/snapshots")
+  } else {
+    Some("releases" at nexus + "service/local/staging/deploy/maven2")
+  }
+}
