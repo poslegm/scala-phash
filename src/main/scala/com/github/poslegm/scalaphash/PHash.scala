@@ -238,7 +238,7 @@ object PHash {
 
   type FloatMatrix = Array[Array[Float]]
 
-  implicit class FloatMatrixOps(matrix: FloatMatrix) {
+  private[scalaphash] implicit class FloatMatrixOps(matrix: FloatMatrix) {
     def * (other: FloatMatrix): FloatMatrix = {
       if (matrix.length == 0 || matrix(0).length == 0 || matrix(0).length != other.length) {
         throw new IllegalArgumentException(s"Can't multiply matrices")
@@ -258,7 +258,7 @@ object PHash {
   }
 }
 
-class Projections(image: PixelMatrix, val projectionsCount: Int) {
+private[scalaphash] class Projections(image: PixelMatrix, val projectionsCount: Int) {
   private lazy val Theta180 = Array.tabulate(180)(_ * Math.PI/180)
   private lazy val TanTheta180 = Array.tabulate(180)(i => Math.tan(Theta180(i)))
 
