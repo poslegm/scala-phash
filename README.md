@@ -5,13 +5,13 @@ Original pHash uses CImg library for image processing but I could not find CImg 
 ## How to use
 My library implements three Perceptual Hashing algorithms: Radial Hash, DCT hash and Marr hash. [More info about it](http://www.phash.org/docs/pubs/thesis_zauner.pdf).
 
-##### sbt dependencies
+#### sbt dependencies
 
 ```scala 
 libraryDependencies += "com.github.poslegm" %% "scala-phash" % "1.0.1"
 ```
 
-##### Example
+#### Example
 
 ```scala
 import com.github.poslegm.scalaphash.PHash
