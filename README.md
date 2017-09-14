@@ -8,7 +8,7 @@ My library implements three Perceptual Hashing algorithms: Radial Hash, DCT hash
 #### sbt dependencies
 
 ```scala 
-libraryDependencies += "com.github.poslegm" %% "scala-phash" % "1.0.1"
+libraryDependencies += "com.github.poslegm" %% "scala-phash" % "1.0.2"
 ```
 
 #### Example
