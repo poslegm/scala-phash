@@ -8,29 +8,14 @@ import scala.annotation.tailrec
 import scala.collection.mutable.ArrayBuffer
 import scala.util.control.NonFatal
 
-object PHash {
-  type DCTHash = Long
-  type MarrHash = Array[Int]
-  type RadialHash = Array[Int]
-
+object PHash extends PHashAlgebra {
   private lazy val dctMatrix = createDctMatrix(32)
   private lazy val dctMatrixTransposed = dctMatrix.transpose
-  /**
-    * Computes DCT hash value of image
-    * (http://www.phash.org/docs/pubs/thesis_zauner.pdf / page 21)
-    * @param image image for hashing
-    * @return 64-bit hash value or exception
-    * */
-  def dctHash(image: BufferedImage): Either[Throwable, DCTHash] =
+
+  override def dctHash(image: BufferedImage): Either[Throwable, DCTHash] =
     try Right(unsafeDctHash(image)) catch { case NonFatal(e) => Left(e) }
 
-  /**
-    * Computes DCT hash value of image
-    * (http://www.phash.org/docs/pubs/thesis_zauner.pdf / page 21)
-    * @param image image for hashing
-    * @return 64-bit hash value
-    * */
-  def unsafeDctHash(image: BufferedImage): DCTHash = {
+  override def unsafeDctHash(image: BufferedImage): DCTHash = {
     val processedImage = PixelMatrix(image).makeGrayScale().makeConvolved()
     val matrix = processedImage.resize(32, 32).toMatrix
     val dctImage = dctMatrix * matrix * dctMatrixTransposed
@@ -43,11 +28,7 @@ object PHash {
     }
   }
 
-  /**
-    * Computes distance between two DCT hashes
-    * Less is better
-    * */
-  def dctHashDistance(hash1: DCTHash, hash2: DCTHash): Long = {
+  override def dctHashDistance(hash1: DCTHash, hash2: DCTHash): Long = {
     var x = hash1 ^ hash2
     val m1  = 0x5555555555555555L
     val m2  = 0x3333333333333333L
@@ -59,26 +40,10 @@ object PHash {
     (x * h01) >> 56
   }
 
-  /**
-    * Computes Marr hash value of image
-    * (http://www.phash.org/docs/pubs/thesis_zauner.pdf / page 22)
-    * @param image image for hashing
-    * @param alpha coefficient for correlation kernel
-    * @param level coefficient for correlation kernel
-    * @return hash as int array or exception
-    * */
-  def marrHash(image: BufferedImage, alpha: Int = 2, level: Int = 1): Either[Throwable, MarrHash] =
+  override def marrHash(image: BufferedImage, alpha: Int = 2, level: Int = 1): Either[Throwable, MarrHash] =
     try Right(unsafeMarrHash(image, alpha, level)) catch { case NonFatal(e) => Left(e) }
 
-  /**
-    * Computes Marr hash value of image
-    * (http://www.phash.org/docs/pubs/thesis_zauner.pdf / page 22)
-    * @param image image for hashing
-    * @param alpha coefficient for correlation kernel
-    * @param level coefficient for correlation kernel
-    * @return hash as int array
-    * */
-  def unsafeMarrHash(image: BufferedImage, alpha: Int = 2, level: Int = 1): MarrHash = {
+  override def unsafeMarrHash(image: BufferedImage, alpha: Int = 2, level: Int = 1): MarrHash = {
 
     val processed = PixelMatrix(image).makeGrayScale().makeBlurred().resize(512,512).equalize(256)
 
@@ -117,11 +82,8 @@ object PHash {
 
     hash.toArray
   }
-  /**
-    * Computes distance between two Marr hashes
-    * Less is better
-    * */
-  def marrHashDistance(hash1: MarrHash, hash2: MarrHash): Option[Double] = {
+
+  override def marrHashDistance(hash1: MarrHash, hash2: MarrHash): Option[Double] = {
     if (hash1.length != hash2.length || hash1.isEmpty) {
       None
     } else {
@@ -133,24 +95,10 @@ object PHash {
     }
   }
 
-  /**
-    * Computes Radial hash value of image
-    * (http://www.phash.org/docs/pubs/thesis_zauner.pdf / page 24)
-    * @param image image for hashing
-    * @param projectionsCount number of projections to compute
-    * @return hash as int array or exception
-    * */
-  def radialHash(image: BufferedImage, projectionsCount: Int = 180): Either[Throwable, RadialHash] =
+  override def radialHash(image: BufferedImage, projectionsCount: Int = 180): Either[Throwable, RadialHash] =
     try Right(unsafeRadialHash(image, projectionsCount)) catch { case NonFatal(e) => Left(e) }
 
-  /**
-    * Computes Radial hash value of image
-    * (http://www.phash.org/docs/pubs/thesis_zauner.pdf / page 24)
-    * @param image image for hashing
-    * @param projectionsCount number of projections to compute
-    * @return hash as int array
-    * */
-  def unsafeRadialHash(image: BufferedImage, projectionsCount: Int = 180): RadialHash = {
+  override def unsafeRadialHash(image: BufferedImage, projectionsCount: Int = 180): RadialHash = {
     val grayscaled = if (image.getColorModel.getColorSpace.getNumComponents >= 3) {
       PixelMatrix(image).makeGrayScale()
     } else {
@@ -163,11 +111,7 @@ object PHash {
     calculateRadialHash(features)
   }
 
-  /**
-    * Computes distance between two Radial hashes
-    * More is better
-    * */
-  def radialHashDistance(hash1: RadialHash, hash2: RadialHash): Double = {
+  override def radialHashDistance(hash1: RadialHash, hash2: RadialHash): Double = {
     val meanX: Double = hash1.sum / hash2.length
     val meanY: Double = hash2.sum / hash2.length
     var max = 0.0
