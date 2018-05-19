@@ -4,8 +4,8 @@ organization := "com.github.poslegm"
 
 version := "1.0.3"
 
-scalaVersion := "2.12.1"
-crossScalaVersions := Seq("2.11.8", "2.12.1")
+scalaVersion := "2.12.6"
+crossScalaVersions := Seq("2.11.8", "2.12.1", scalaVersion.value)
 
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 
