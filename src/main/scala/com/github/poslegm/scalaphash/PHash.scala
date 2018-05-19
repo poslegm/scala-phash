@@ -2,19 +2,35 @@ package com.github.poslegm.scalaphash
 
 import java.awt.image.BufferedImage
 
+import com.github.poslegm.scalaphash.MathUtils._
+
 import scala.annotation.tailrec
 import scala.collection.mutable.ArrayBuffer
+import scala.util.control.NonFatal
 
 object PHash {
+  type DCTHash = Long
+  type MarrHash = Array[Int]
+  type RadialHash = Array[Int]
+
   private lazy val dctMatrix = createDctMatrix(32)
   private lazy val dctMatrixTransposed = dctMatrix.transpose
   /**
     * Computes DCT hash value of image
     * (http://www.phash.org/docs/pubs/thesis_zauner.pdf / page 21)
     * @param image image for hashing
+    * @return 64-bit hash value or exception
+    * */
+  def dctHash(image: BufferedImage): Either[Throwable, DCTHash] =
+    try Right(unsafeDctHash(image)) catch { case NonFatal(e) => Left(e) }
+
+  /**
+    * Computes DCT hash value of image
+    * (http://www.phash.org/docs/pubs/thesis_zauner.pdf / page 21)
+    * @param image image for hashing
     * @return 64-bit hash value
     * */
-  def dctHash(image: BufferedImage): Long = {
+  def unsafeDctHash(image: BufferedImage): DCTHash = {
     val processedImage = PixelMatrix(image).makeGrayScale().makeConvolved()
     val matrix = processedImage.resize(32, 32).toMatrix
     val dctImage = dctMatrix * matrix * dctMatrixTransposed
@@ -31,7 +47,7 @@ object PHash {
     * Computes distance between two DCT hashes
     * Less is better
     * */
-  def dctHashDistance(hash1: Long, hash2: Long): Long = {
+  def dctHashDistance(hash1: DCTHash, hash2: DCTHash): Long = {
     var x = hash1 ^ hash2
     val m1  = 0x5555555555555555L
     val m2  = 0x3333333333333333L
@@ -49,9 +65,21 @@ object PHash {
     * @param image image for hashing
     * @param alpha coefficient for correlation kernel
     * @param level coefficient for correlation kernel
-    * @return Future of array with hash
+    * @return hash as int array or exception
     * */
-  def marrHash(image: BufferedImage, alpha: Int = 2, level: Int = 1): Array[Int] = {
+  def marrHash(image: BufferedImage, alpha: Int = 2, level: Int = 1): Either[Throwable, MarrHash] =
+    try Right(unsafeMarrHash(image, alpha, level)) catch { case NonFatal(e) => Left(e) }
+
+  /**
+    * Computes Marr hash value of image
+    * (http://www.phash.org/docs/pubs/thesis_zauner.pdf / page 22)
+    * @param image image for hashing
+    * @param alpha coefficient for correlation kernel
+    * @param level coefficient for correlation kernel
+    * @return hash as int array
+    * */
+  def unsafeMarrHash(image: BufferedImage, alpha: Int = 2, level: Int = 1): MarrHash = {
+
     val processed = PixelMatrix(image).makeGrayScale().makeBlurred().resize(512,512).equalize(256)
 
     val kernel = createMarrKernel(alpha, level)
@@ -89,12 +117,11 @@ object PHash {
 
     hash.toArray
   }
-
   /**
     * Computes distance between two Marr hashes
     * Less is better
     * */
-  def marrHashDistance(hash1: Array[Int], hash2: Array[Int]): Option[Double] = {
+  def marrHashDistance(hash1: MarrHash, hash2: MarrHash): Option[Double] = {
     if (hash1.length != hash2.length || hash1.isEmpty) {
       None
     } else {
@@ -111,9 +138,19 @@ object PHash {
     * (http://www.phash.org/docs/pubs/thesis_zauner.pdf / page 24)
     * @param image image for hashing
     * @param projectionsCount number of projections to compute
-    * @return Array with hash
+    * @return hash as int array or exception
     * */
-  def radialHash(image: BufferedImage, projectionsCount: Int = 180): Array[Int] = {
+  def radialHash(image: BufferedImage, projectionsCount: Int = 180): Either[Throwable, RadialHash] =
+    try Right(unsafeRadialHash(image, projectionsCount)) catch { case NonFatal(e) => Left(e) }
+
+  /**
+    * Computes Radial hash value of image
+    * (http://www.phash.org/docs/pubs/thesis_zauner.pdf / page 24)
+    * @param image image for hashing
+    * @param projectionsCount number of projections to compute
+    * @return hash as int array
+    * */
+  def unsafeRadialHash(image: BufferedImage, projectionsCount: Int = 180): RadialHash = {
     val grayscaled = if (image.getColorModel.getColorSpace.getNumComponents >= 3) {
       PixelMatrix(image).makeGrayScale()
     } else {
@@ -130,7 +167,7 @@ object PHash {
     * Computes distance between two Radial hashes
     * More is better
     * */
-  def radialHashDistance(hash1: Array[Int], hash2: Array[Int]): Double = {
+  def radialHashDistance(hash1: RadialHash, hash2: RadialHash): Double = {
     val meanX: Double = hash1.sum / hash2.length
     val meanY: Double = hash2.sum / hash2.length
     var max = 0.0
@@ -149,10 +186,10 @@ object PHash {
     max
   }
 
-  private def calculateProjections(image: PixelMatrix, projectionsCount: Int): Projections =
-    new Projections(image, projectionsCount)
+  private def calculateProjections(image: PixelMatrix, projectionsCount: Int): RadialProjections =
+    new RadialProjections(image, projectionsCount)
 
-  private def calculateFeatures(projections: Projections): Array[Double] = {
+  private def calculateFeatures(projections: RadialProjections): Array[Double] = {
     val features = Array.fill(projections.projectionsCount)(0)
 
     var featuresSum = 0.0
@@ -234,89 +271,5 @@ object PHash {
       val tail = xs.sorted.drop(xs.length / 2 - 1)
       (tail.head + tail.tail.head) / 2.0f
     case xs => xs.sorted.drop(xs.length / 2).head
-  }
-
-  type FloatMatrix = Array[Array[Float]]
-
-  private[scalaphash] implicit class FloatMatrixOps(matrix: FloatMatrix) {
-    def * (other: FloatMatrix): FloatMatrix = {
-      if (matrix.length == 0 || matrix(0).length == 0 || matrix(0).length != other.length) {
-        throw new IllegalArgumentException(s"Can't multiply matrices")
-      }
-
-      Array.tabulate(matrix.length, other(0).length) { (i, j) =>
-        matrix(0).indices.foldLeft(0.0f)((res, k) => res + matrix(i)(k) * other(k)(j))
-      }
-    }
-
-    /**
-      * Crops matrix from x1 to x2 and y1 to y2 (inclusive)
-      * */
-    def crop(x1: Int, y1: Int, x2: Int, y2: Int): FloatMatrix = {
-      Array.tabulate(x2 - x1 + 1, y2 - y1 + 1)((i, j) => matrix(i + x1)(j + y1))
-    }
-  }
-}
-
-private[scalaphash] class Projections(image: PixelMatrix, val projectionsCount: Int) {
-  private lazy val Theta180 = Array.tabulate(180)(_ * Math.PI/180)
-  private lazy val TanTheta180 = Array.tabulate(180)(i => Math.tan(Theta180(i)))
-
-  private lazy val maxSide = if (image.width > image.height) image.width else image.height
-  private lazy val xOff = (image.width >> 1) + (image.width & 0x1) // round(image.getWidth/2) but only with integer operations
-  private lazy val yOff = (image.height >> 1) + (image.height & 0x1) // round(image.getHeight/2) but only with integer operations
-
-  val countPerLine: Array[Int] = Array.fill(projectionsCount)(0)
-  val projections: Array[Array[Int]] = Array.fill(projectionsCount, maxSide)(0)
-
-  compute()
-
-  def maxDimension: Int = projections(0).length
-
-  private def compute(): Unit = {
-    computeFirstQuarter()
-    computeLastQuarter()
-  }
-
-  private def computeFirstQuarter(): Unit = {
-    for {
-      k <- 0 until (projectionsCount / 4 + 1)
-      alpha = TanTheta180(k)
-      x <- 0 until maxSide
-    } {
-      val y = alpha * (x - xOff)
-      val yd = Math.floor(y + (if (y >= 0) 0.5 else -0.5)).toInt
-      if ((yd + yOff >= 0) && (yd + yOff < image.height) && (x < image.width)) {
-        projections(k)(x) = image.getY(x, yd + yOff)
-        countPerLine(k) += 1
-      }
-      if ((yd + xOff >= 0) && (yd + xOff < image.width) && (k != projectionsCount/4) && (x < image.height)) {
-        projections(projectionsCount / 2 - k)(x) = image.getY(yd + xOff, x)
-        countPerLine(projectionsCount / 2 - k) += 1
-      }
-    }
-  }
-
-  private def computeLastQuarter(): Unit = {
-    var j = 0
-    for (k <- (3 * projectionsCount / 4) until projectionsCount) {
-      val alpha = TanTheta180(k)
-      for (x <- 0 until maxSide) {
-        val y = alpha * (x - xOff)
-        val yd = Math.floor(y + (if (y >= 0) 0.5 else -0.5)).toInt
-        if ((yd + yOff >= 0) && (yd + yOff < image.height) && (x < image.width)) {
-          projections(k)(x) = image.getY(x, yd + yOff)
-          countPerLine(k) += 1
-        }
-        if ((yOff - yd >= 0)
-          && (yOff - yd < image.width)
-          && (2 * yOff - x >= 0)
-          && (2 * yOff - x < image.height) && (k != 3 * projectionsCount / 4)) {
-          projections(k - j)(x) = image.getY(-yd + yOff, -(x - yOff) + yOff)
-          countPerLine(k - j) += 1
-        }
-      }
-      j += 2
-    }
   }
 }

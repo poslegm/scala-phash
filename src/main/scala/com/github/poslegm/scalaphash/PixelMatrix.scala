@@ -9,10 +9,10 @@ import com.jhlabs.image.GaussianFilter
 import scala.collection.mutable.ArrayBuffer
 
 private[scalaphash] case class PixelMatrix private (private val flattenPixels: Array[Float],
-                                private val pixelElementsCount: Int,
-                                width: Int,
-                                height: Int,
-                                private val imageType: Int) {
+                                                    private val pixelElementsCount: Int,
+                                                    width: Int,
+                                                    height: Int,
+                                                    private val imageType: Int) {
   /**
     * Makes image grayscale by converting RGB to YCbCr and keeping Y channel only
     *
