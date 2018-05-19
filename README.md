@@ -14,7 +14,7 @@ libraryDependencies += "com.github.poslegm" %% "scala-phash" % "1.1.0"
 
 #### Example
 
-For full public API with documentation see `trait PHashAlgebra`.
+For full public API with documentation see [`trait PHashAlgebra`](https://github.com/poslegm/scala-phash/blob/master/src/main/scala/com/github/poslegm/scalaphash/PHashAlgebra.scala).
 
 ```scala
 import com.github.poslegm.scalaphash.PHash._
