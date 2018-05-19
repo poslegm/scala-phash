@@ -2,7 +2,7 @@ name := "scala-phash"
 
 organization := "com.github.poslegm"
 
-version := "1.0.3"
+version := "1.1.0"
 
 scalaVersion := "2.12.6"
 crossScalaVersions := Seq("2.11.8", "2.12.1", scalaVersion.value)

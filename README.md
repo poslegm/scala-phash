@@ -9,28 +9,31 @@ My library implements three Perceptual Hashing algorithms: Radial Hash, DCT hash
 
 ```scala 
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
-libraryDependencies += "com.github.poslegm" %% "scala-phash" % "1.0.3"
+libraryDependencies += "com.github.poslegm" %% "scala-phash" % "1.1.0"
 ```
 
 #### Example
 
+For full public API with documentation see `trait PHashAlgebra`.
+
 ```scala
-import com.github.poslegm.scalaphash.PHash
+import com.github.poslegm.scalaphash.PHash._
 import javax.imageio.ImageIO
 
 val img1 = ImageIO.read(new File("img1.jpg"))
 val img2 = ImageIO.read(new File("img2.jpg"))
 
-val img1rad = PHash.radialHash(img1)
-val img2rad = PHash.radialHash(img2)
+val radialDistance: Either[Throwable, Double] = for {
+  img1rad <- radialHash(img1)
+  img2rad <- radialHash(img2)
+} yield radialHashDistance(img1rad, img2rad)
 
-val radialDistance = PHash.radialHashDistance(img1rad, img2rad)
-
-if (radialDistance > 0.95) {
-  println("similar")
-} else {
-  println("not similar")
+radialDistance.foreach {
+  case distance if distance > 0.95 => println("similar")
+  case _ => println("not similar")
 }
+
+radialDistance.left.foreach(e => println(e.getMessage))
 ```
 
 **Radial** distance is _more_ when images are similar.
