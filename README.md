@@ -2,6 +2,7 @@
 
 Scala fork of [pHash](http://phash.org) library. This library identifies whether images are similar.  
 Original pHash uses CImg library for image processing but I could not find CImg for jvm. Therefore I use ```java.awt``` and self-made functions for image processing. Consequently, results of my library is different from original phash.
+
 ## How to use
 My library implements three Perceptual Hashing algorithms: Radial Hash, DCT hash and Marr hash. [More info about it](http://www.phash.org/docs/pubs/thesis_zauner.pdf).
 
@@ -12,9 +13,17 @@ resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repos
 libraryDependencies += "com.github.poslegm" %% "scala-phash" % "1.1.0"
 ```
 
-#### Example
+#### API
+There is three functions for each hashing algorithm. Let's consider them by example of DCT hash:
+* `def dctHash(image: BufferedImage): Either[Throwable, DCTHash]` ― compute image's hash;
+* `def unsafeDctHash(image: BufferedImage): DCTHash` ― compute image's hash unsafely (danger of exception);
+* `def dctHashDistance(hash1: DCTHash, hash2: DCTHash): Long` ― compare hashes of two images.
 
-For full public API with documentation see [`trait PHashAlgebra`](https://github.com/poslegm/scala-phash/blob/master/src/main/scala/com/github/poslegm/scalaphash/PHashAlgebra.scala).
+Similar functions written for Marr and Radial Hash algorithms.
+
+All public api with scaladocs decsribed in trait [`PHashAlgebra`](https://github.com/poslegm/scala-phash/blob/master/src/main/scala/com/github/poslegm/scalaphash/PHashAlgebra.scala).
+
+#### Example
 
 ```scala
 import com.github.poslegm.scalaphash.PHash._
