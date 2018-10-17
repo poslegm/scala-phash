@@ -25,20 +25,24 @@ class PHashTest extends FlatSpec with Matchers with PrivateMethodTester {
       i <- matrix.indices
       j <- matrix(i).indices
     } yield approximatelyEqual(matrix(i)(j), canonical(i)(j), 0.000001f))
-      .forall(x => x) should be (true)
+      .forall(x => x) should be(true)
   }
 
   "PHash" should "compute marr kernel" in {
     val canonical = Array(
-      Array(-3.37606e-06, -8.5713e-05, -0.000817199, -0.00305203, -0.00469648, -0.00305203, -0.000817199, -8.5713e-05,  -3.37606e-06),
-      Array(-8.5713e-05,  -0.00197456, -0.0165378,   -0.0539036,  -0.077763,   -0.0539036,  -0.0165378,   -0.00197456,  -8.5713e-05),
-      Array(-0.000817199, -0.0165378,  -0.109894,    -0.246255,   -0.270671,   -0.246255,   -0.109894,    -0.0165378,   -0.000817199),
-      Array(-0.00305203,  -0.0539036,  -0.246255,     0,           0.606531,    0,          -0.246255,    -0.0539036,   -0.00305203),
-      Array(-0.00469648,  -0.077763,   -0.270671,     0.606531,    2,           0.606531,   -0.270671,    -0.077763,    -0.00469648),
-      Array(-0.00305203,  -0.0539036,  -0.246255,     0,           0.606531,    0,          -0.246255,    -0.0539036,   -0.00305203),
-      Array(-0.000817199, -0.0165378,  -0.109894,    -0.246255,   -0.270671,   -0.246255,   -0.109894,    -0.0165378,   -0.000817199),
-      Array(-8.5713e-05,  -0.00197456, -0.0165378,   -0.0539036,  -0.077763,   -0.0539036,  -0.0165378,   -0.00197456,  -8.5713e-05),
-      Array(-3.37606e-06, -8.5713e-05, -0.000817199, -0.00305203, -0.00469648, -0.00305203, -0.000817199, -8.5713e-05,  -3.37606e-06)
+      Array(-3.37606e-06, -8.5713e-05, -0.000817199, -0.00305203, -0.00469648, -0.00305203, -0.000817199, -8.5713e-05,
+        -3.37606e-06),
+      Array(-8.5713e-05, -0.00197456, -0.0165378, -0.0539036, -0.077763, -0.0539036, -0.0165378, -0.00197456,
+        -8.5713e-05),
+      Array(-0.000817199, -0.0165378, -0.109894, -0.246255, -0.270671, -0.246255, -0.109894, -0.0165378, -0.000817199),
+      Array(-0.00305203, -0.0539036, -0.246255, 0, 0.606531, 0, -0.246255, -0.0539036, -0.00305203),
+      Array(-0.00469648, -0.077763, -0.270671, 0.606531, 2, 0.606531, -0.270671, -0.077763, -0.00469648),
+      Array(-0.00305203, -0.0539036, -0.246255, 0, 0.606531, 0, -0.246255, -0.0539036, -0.00305203),
+      Array(-0.000817199, -0.0165378, -0.109894, -0.246255, -0.270671, -0.246255, -0.109894, -0.0165378, -0.000817199),
+      Array(-8.5713e-05, -0.00197456, -0.0165378, -0.0539036, -0.077763, -0.0539036, -0.0165378, -0.00197456,
+        -8.5713e-05),
+      Array(-3.37606e-06, -8.5713e-05, -0.000817199, -0.00305203, -0.00469648, -0.00305203, -0.000817199, -8.5713e-05,
+        -3.37606e-06)
     ).map(_.map(_.toFloat))
 
     val createMarrKernel = PrivateMethod[Array[Array[Float]]]('createMarrKernel)
@@ -50,7 +54,7 @@ class PHashTest extends FlatSpec with Matchers with PrivateMethodTester {
       i <- matrix.indices
       j <- matrix(i).indices
     } yield approximatelyEqual(matrix(i)(j), canonical(i)(j), 0.000001f))
-      .forall(x => x) should be (true)
+      .forall(x => x) should be(true)
   }
 
   "PHash" should "compute dct hashes" in {
@@ -94,7 +98,10 @@ class PHashTest extends FlatSpec with Matchers with PrivateMethodTester {
     val example2 = ImageIO.read(new File("src/test/resources/example2.jpg"))
 
     val example2MarrHash = PHash.marrHash(example2)
-    example2MarrHash.right.get shouldEqual Array(0, 0, 0, 9, 108, 152, 0, 0, 0, 0, 0, 0, 96, 0, 9, 96, 0, 0, 13, 182, 208, 132, 178, 92, 13, 51, 217, 166, 175, 9, 172, 5, 130, 48, 109, 76, 53, 100, 164, 154, 129, 221, 172, 152, 183, 52, 130, 15, 1, 243, 190, 143, 240, 73, 106, 134, 78, 192, 245, 193, 11, 64, 122, 19, 165, 177, 177, 132, 144, 212, 104, 102)
+    example2MarrHash.right.get shouldEqual Array(0, 0, 0, 9, 108, 152, 0, 0, 0, 0, 0, 0, 96, 0, 9, 96, 0, 0, 13, 182,
+      208, 132, 178, 92, 13, 51, 217, 166, 175, 9, 172, 5, 130, 48, 109, 76, 53, 100, 164, 154, 129, 221, 172, 152, 183,
+      52, 130, 15, 1, 243, 190, 143, 240, 73, 106, 134, 78, 192, 245, 193, 11, 64, 122, 19, 165, 177, 177, 132, 144,
+      212, 104, 102)
   }
 
   "Marr hashes" should "compare not equal" in {
@@ -132,7 +139,9 @@ class PHashTest extends FlatSpec with Matchers with PrivateMethodTester {
 
     val example2RadialHash = PHash.radialHash(example2)
 
-    example2RadialHash.right.get shouldEqual Array(194, 192, 0, 204, 89, 209, 193, 163, 255, 212, 187, 207, 185, 190, 175, 203, 179, 182, 189, 200, 186, 191, 194, 196, 194, 201, 199, 189, 187, 197, 193, 192, 198, 191, 194, 194, 197, 195, 192, 196)
+    example2RadialHash.right.get shouldEqual Array(194, 192, 0, 204, 89, 209, 193, 163, 255, 212, 187, 207, 185, 190,
+      175, 203, 179, 182, 189, 200, 186, 191, 194, 196, 194, 201, 199, 189, 187, 197, 193, 192, 198, 191, 194, 194, 197,
+      195, 192, 196)
   }
 
   "Radial hash" should "compare not equal" in {
@@ -165,7 +174,6 @@ class PHashTest extends FlatSpec with Matchers with PrivateMethodTester {
     } yield PHash.radialHashDistance(dogRadialHash, catRadialHash)) shouldEqual Right(0.36438994709451805)
   }
 
-  def approximatelyEqual(x: Float, y: Float, delta: Float): Boolean = {
+  def approximatelyEqual(x: Float, y: Float, delta: Float): Boolean =
     y - delta <= x && x <= y + delta
-  }
 }

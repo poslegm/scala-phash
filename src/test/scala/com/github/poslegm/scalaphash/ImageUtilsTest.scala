@@ -10,7 +10,7 @@ class ImageUtilsTest extends FlatSpec with Matchers with PrivateMethodTester {
     val a = PixelMatrix(ImageIO.read(new File("src/test/resources/example1.jpg")))
     val b = PixelMatrix(ImageIO.read(new File("src/test/resources/example1.jpg")))
 
-    a.isEqualTo(b) should be (true)
+    a.isEqualTo(b) should be(true)
   }
 
   "MakeGrayscale" should "work correct" in {
@@ -18,7 +18,7 @@ class ImageUtilsTest extends FlatSpec with Matchers with PrivateMethodTester {
     val b = PixelMatrix(ImageIO.read(new File("src/test/resources/example1.jpg"))).makeGrayScale()
 
     ImageIO.write(a.toBufferedImage(), "jpg", new File("src/test/resources/grayscaled-example1.jpg"))
-    a.isEqualTo(b) should be (true)
+    a.isEqualTo(b) should be(true)
   }
 
   "MakeConvolved" should "work correct" in {
@@ -34,7 +34,7 @@ class ImageUtilsTest extends FlatSpec with Matchers with PrivateMethodTester {
 
     ImageIO.write(a.toBufferedImage(), "jpg", new File("src/test/resources/blured-example1.jpg"))
 
-    a.isEqualTo(b) should be (true)
+    a.isEqualTo(b) should be(true)
   }
 
   "Resize" should "work correct" in {
@@ -43,16 +43,15 @@ class ImageUtilsTest extends FlatSpec with Matchers with PrivateMethodTester {
 
     ImageIO.write(a.toBufferedImage(), "jpg", new File("src/test/resources/resized-example1.jpg"))
 
-    a.isEqualTo(b) should be (true)
+    a.isEqualTo(b) should be(true)
   }
 
   "Equalize" should "work correct" in {
     val a = PixelMatrix(ImageIO.read(new File("src/test/resources/example4.jpg")))
     val b = PixelMatrix(ImageIO.read(new File("src/test/resources/example4.jpg")))
 
-    ImageIO.write(
-      a.equalize(256).toBufferedImage(), "jpg", new File("src/test/resources/equalized-example4.jpg"))
+    ImageIO.write(a.equalize(256).toBufferedImage(), "jpg", new File("src/test/resources/equalized-example4.jpg"))
 
-    a.equalize(256).isEqualTo(b.equalize(256)) should be (true)
+    a.equalize(256).isEqualTo(b.equalize(256)) should be(true)
   }
 }

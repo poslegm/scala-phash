@@ -13,7 +13,8 @@ object PHash extends PHashAlgebra {
   private lazy val dctMatrixTransposed = dctMatrix.transpose
 
   override def dctHash(image: BufferedImage): Either[Throwable, DCTHash] =
-    try Right(unsafeDctHash(image)) catch { case NonFatal(e) => Left(e) }
+    try Right(unsafeDctHash(image))
+    catch { case NonFatal(e) => Left(e) }
 
   override def unsafeDctHash(image: BufferedImage): DCTHash = {
     val processedImage = PixelMatrix(image).makeGrayScale().makeConvolved()
@@ -30,10 +31,10 @@ object PHash extends PHashAlgebra {
 
   override def dctHashDistance(hash1: DCTHash, hash2: DCTHash): Long = {
     var x = hash1 ^ hash2
-    val m1  = 0x5555555555555555L
-    val m2  = 0x3333333333333333L
+    val m1 = 0x5555555555555555L
+    val m2 = 0x3333333333333333L
     val h01 = 0x0101010101010101L
-    val m4  = 0x0f0f0f0f0f0f0f0fL
+    val m4 = 0x0f0f0f0f0f0f0f0fL
     x -= (x >> 1) & m1
     x = (x & m2) + ((x >> 2) & m2)
     x = (x + (x >> 4)) & m4
@@ -41,11 +42,12 @@ object PHash extends PHashAlgebra {
   }
 
   override def marrHash(image: BufferedImage, alpha: Int = 2, level: Int = 1): Either[Throwable, MarrHash] =
-    try Right(unsafeMarrHash(image, alpha, level)) catch { case NonFatal(e) => Left(e) }
+    try Right(unsafeMarrHash(image, alpha, level))
+    catch { case NonFatal(e) => Left(e) }
 
   override def unsafeMarrHash(image: BufferedImage, alpha: Int = 2, level: Int = 1): MarrHash = {
 
-    val processed = PixelMatrix(image).makeGrayScale().makeBlurred().resize(512,512).equalize(256)
+    val processed = PixelMatrix(image).makeGrayScale().makeBlurred().resize(512, 512).equalize(256)
 
     val kernel = createMarrKernel(alpha, level)
 
@@ -58,7 +60,10 @@ object PHash extends PHashAlgebra {
     var hashByte, onesCount, zerosCount, bitIndex = 0
     val hash = ArrayBuffer.fill(72)(0)
 
-    for (i <- 0 until 29 by 4; j <- 0 until 29 by 4) {
+    for {
+      i <- 0 until 29 by 4
+      j <- 0 until 29 by 4
+    } {
       val subsec = blocks.crop(j, i, j + 2, i + 2).flatten
       val ave = subsec.sum / subsec.length
 
@@ -83,7 +88,7 @@ object PHash extends PHashAlgebra {
     hash.toArray
   }
 
-  override def marrHashDistance(hash1: MarrHash, hash2: MarrHash): Option[Double] = {
+  override def marrHashDistance(hash1: MarrHash, hash2: MarrHash): Option[Double] =
     if (hash1.length != hash2.length || hash1.isEmpty) {
       None
     } else {
@@ -93,10 +98,10 @@ object PHash extends PHashAlgebra {
       val maxBitsCount = hash1.length * 8
       Some(distance / maxBitsCount)
     }
-  }
 
   override def radialHash(image: BufferedImage, projectionsCount: Int = 180): Either[Throwable, RadialHash] =
-    try Right(unsafeRadialHash(image, projectionsCount)) catch { case NonFatal(e) => Left(e) }
+    try Right(unsafeRadialHash(image, projectionsCount))
+    catch { case NonFatal(e) => Left(e) }
 
   override def unsafeRadialHash(image: BufferedImage, projectionsCount: Int = 180): RadialHash = {
     val grayscaled = if (image.getColorModel.getColorSpace.getNumComponents >= 3) {
@@ -115,13 +120,13 @@ object PHash extends PHashAlgebra {
     val meanX: Double = hash1.sum / hash2.length
     val meanY: Double = hash2.sum / hash2.length
     var max = 0.0
-    for (d <- hash2 .indices) {
+    for (d <- hash2.indices) {
       var num = 0.0
       var denX = 0.0
       var denY = 0.0
-      for (i <- hash2 .indices) {
-        val hash2Index = (hash2 .length + i - d) % hash2.length
-        num  += (hash1(i) - meanX) * (hash2(hash2Index) - meanY)
+      for (i <- hash2.indices) {
+        val hash2Index = (hash2.length + i - d) % hash2.length
+        num += (hash1(i) - meanX) * (hash2(hash2Index) - meanY)
         denX += Math.pow(hash1(i) - meanX, 2)
         denY += Math.pow(hash2(hash2Index) - meanY, 2)
       }
@@ -142,10 +147,11 @@ object PHash extends PHashAlgebra {
     for (k <- 0 until projections.projectionsCount) {
       val pixelsCount = projections.countPerLine(k)
       val (lineSum, lineSumSqd) = (0 until projections.maxDimension).foldLeft((0, 0)) {
-        case ((s, sumSqd), i) => (
-          s + projections.projections(k)(i),
-          sumSqd + projections.projections(k)(i) * projections.projections(k)(i)
-        )
+        case ((s, sumSqd), i) =>
+          (
+            s + projections.projections(k)(i),
+            sumSqd + projections.projections(k)(i) * projections.projections(k)(i)
+          )
       }
       features(k) = (lineSumSqd / pixelsCount) - (lineSum * lineSum) / (pixelsCount * pixelsCount)
       featuresSum += features(k)

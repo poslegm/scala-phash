@@ -4,7 +4,7 @@ package com.github.poslegm.scalaphash
   * Utilitary class for projections computing (Radial Hash algorithm)
   * */
 private[scalaphash] class RadialProjections(image: PixelMatrix, val projectionsCount: Int) {
-  private lazy val Theta180 = Array.tabulate(180)(_ * Math.PI/180)
+  private lazy val Theta180 = Array.tabulate(180)(_ * Math.PI / 180)
   private lazy val TanTheta180 = Array.tabulate(180)(i => Math.tan(Theta180(i)))
 
   private lazy val maxSide = if (image.width > image.height) image.width else image.height
@@ -23,7 +23,7 @@ private[scalaphash] class RadialProjections(image: PixelMatrix, val projectionsC
     computeLastQuarter()
   }
 
-  private def computeFirstQuarter(): Unit = {
+  private def computeFirstQuarter(): Unit =
     for {
       k <- 0 until (projectionsCount / 4 + 1)
       alpha = TanTheta180(k)
@@ -35,12 +35,11 @@ private[scalaphash] class RadialProjections(image: PixelMatrix, val projectionsC
         projections(k)(x) = image.getY(x, yd + yOff)
         countPerLine(k) += 1
       }
-      if ((yd + xOff >= 0) && (yd + xOff < image.width) && (k != projectionsCount/4) && (x < image.height)) {
+      if ((yd + xOff >= 0) && (yd + xOff < image.width) && (k != projectionsCount / 4) && (x < image.height)) {
         projections(projectionsCount / 2 - k)(x) = image.getY(yd + xOff, x)
         countPerLine(projectionsCount / 2 - k) += 1
       }
     }
-  }
 
   private def computeLastQuarter(): Unit = {
     var j = 0
