@@ -1,5 +1,8 @@
 # Scala pHash
 
+[![Build Status](https://travis-ci.org/poslegm/scala-phash.svg?branch=master)](https://travis-ci.org/poslegm/scala-phash)
+[![Maven](https://img.shields.io/maven-central/v/com.github.poslegm/scala-phash_2.12.svg?style=flat-square)](https://search.maven.org/artifact/com.github.poslegm/scala-phash_2.12/)
+
 Scala fork of [pHash](http://phash.org) library. This library identifies whether images are similar. You can try it at [demo page](https://chugunkov.website/scala-phash-demo).  
 
 Original pHash uses CImg library for image processing but I could not find CImg for jvm. Therefore I use ```java.awt``` and self-made functions for image processing. Consequently, results of my library is different from original phash.
