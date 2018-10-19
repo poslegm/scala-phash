@@ -1,6 +1,7 @@
 # Scala pHash
 
-Scala fork of [pHash](http://phash.org) library. This library identifies whether images are similar.  
+Scala fork of [pHash](http://phash.org) library. This library identifies whether images are similar. You can try it at [demo page](https://chugunkov.website/scala-phash-demo).  
+
 Original pHash uses CImg library for image processing but I could not find CImg for jvm. Therefore I use ```java.awt``` and self-made functions for image processing. Consequently, results of my library is different from original phash.
 
 ## How to use
