@@ -15,6 +15,16 @@ libraryDependencies ++= Seq(
   "com.jhlabs" % "filters" % "2.0.235-1"
 )
 
+scalacOptions ++= Seq(
+  "-unchecked",
+  "-deprecation",
+  "-feature",
+  "-language:higherKinds",
+  "-Xfatal-warnings",
+  "-Ypartial-unification",
+  "-Ywarn-unused:imports"
+)
+
 fork := true
 
 scalafmtOnCompile := true
