@@ -1,8 +1,7 @@
 package com.github.poslegm.scalaphash
 
-import java.awt.color.ColorSpace
 import java.awt.image._
-import java.awt.{Image, Transparency}
+import java.awt.RenderingHints
 
 import com.jhlabs.image.GaussianFilter
 
@@ -37,17 +36,14 @@ private[scalaphash] case class PixelMatrix private (
       )
     }
 
+  private lazy val defaultConvolutionKernel = Array.fill(7, 7)(1.0f)
+
   /**
-    * Applies Image Convolution algorithm
-    * (https://en.wikipedia.org/wiki/Kernel_(image_processing)#Convolution)
-    * @param kernelSize size of matrix
+    * Alias for `corellate` as well as in the CImg library
+    * @param kernel correlation matrix
     * @return new PixelMatrix with modified pixels
     * */
-  def makeConvolved(kernelSize: Int = 7): PixelMatrix = {
-    val kernel = Array.tabulate(kernelSize, kernelSize)((_, _) => 1.0f / (kernelSize * kernelSize))
-
-    correlate(kernel)
-  }
+  def makeConvolved(kernel: Array[Array[Float]] = defaultConvolutionKernel): PixelMatrix = correlate(kernel)
 
   /**
     * Applies Image Correlation algorithm
@@ -55,8 +51,7 @@ private[scalaphash] case class PixelMatrix private (
     * @param kernel correlation matrix
     * @return new PixelMatrix with modified pixels
     * */
-  def correlate(kernel: Array[Array[Float]]): PixelMatrix =
-    new Correlation(this, kernel).compute()
+  def correlate(kernel: Array[Array[Float]]): PixelMatrix = new Correlation(this, kernel).compute()
 
   /**
     * Applies Image Normalization algorithm
@@ -84,11 +79,11 @@ private[scalaphash] case class PixelMatrix private (
     * @return resized PixelMatrix
     * */
   def resize(dstWidth: Int, dstHeight: Int): PixelMatrix = {
-    val temp = toBufferedImage().getScaledInstance(dstWidth, dstHeight, Image.SCALE_SMOOTH)
     val res = new BufferedImage(dstWidth, dstHeight, imageType)
 
     val g2d = res.createGraphics()
-    g2d.drawImage(temp, 0, 0, null)
+    g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+    g2d.drawImage(toBufferedImage(), 0, 0, dstWidth, dstHeight, null)
     g2d.dispose()
 
     PixelMatrix(res)
@@ -269,7 +264,7 @@ private[scalaphash] case class PixelMatrix private (
         } {
           value += image.getY(x + xm, y + ym) * kernel(mx1 + xm)(my1 + ym)
         }
-        res(y * image.width + x) = PixelMatrix.getYValue(Math.round(value))
+        res(y * image.width + x) = value.round & 0xFF
       }
 
     private def computeOuterPixels(): Unit =
@@ -286,20 +281,20 @@ private[scalaphash] case class PixelMatrix private (
             }
           }
 
-          res(y * image.width + x) = PixelMatrix.getYValue(Math.round(value))
+          res(y * image.width + x) = value.round & 0xFF
 
-          if (!(y < my1 || y >= mye) && !(x < mx1 - 1 || x >= mxe)) {
-            x = mxe
-          } else {
+          if ((y < my1 || y >= mye) || (x < mx1 - 1 || x >= mxe)) {
             x += 1
+          } else {
+            x = mxe
           }
         }
       }
   }
 
 }
-
 private[scalaphash] object PixelMatrix {
+
   def apply(image: BufferedImage): PixelMatrix =
     new PixelMatrix(
       flattenPixels = createFlattenPixelsArray(image),
@@ -309,24 +304,6 @@ private[scalaphash] object PixelMatrix {
       imageType = image.getType
     )
 
-  private lazy val cs = ColorSpace.getInstance(ColorSpace.CS_GRAY)
-  private lazy val nBits = Array(8)
-  private lazy val grayColorModel = new ComponentColorModel(
-    cs,
-    nBits,
-    false,
-    true,
-    Transparency.OPAQUE,
-    DataBuffer.TYPE_BYTE
-  )
-
-  /**
-    * Compute processed color value for Y channel
-    * @param Y Y channel value
-    * @return Y channel value after color processing
-    * */
-  def getYValue(Y: Int): Float =
-    (grayColorModel.getDataElements(Y << 16, null).asInstanceOf[Array[Byte]].head & 0xFF).toFloat
 
   /**
     * Creates array with channel values of each pixel
