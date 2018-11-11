@@ -304,7 +304,6 @@ private[scalaphash] object PixelMatrix {
       imageType = image.getType
     )
 
-
   /**
     * Creates array with channel values of each pixel
     * Example: RGB image, first pixel has red value 17, green 128, blue 23

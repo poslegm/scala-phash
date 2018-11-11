@@ -36,33 +36,43 @@ class MarrHashTest extends FlatSpec with Matchers with PrivateMethodTester {
   }
 
   "PHash" should "compute marr hashes" in {
-    val example2 = ImageIO.read(new File("src/test/resources/example2.jpg"))
+    val image = ImageIO.read(new File("src/test/resources/lenna.jpg"))
 
-    val example2MarrHash = PHash.marrHash(example2)
-    example2MarrHash.right.get shouldEqual Array(0, 0, 0, 9, 108, 152, 0, 0, 0, 0, 0, 0, 96, 0, 9, 96, 0, 0, 13, 182,
-      208, 132, 178, 92, 13, 51, 217, 166, 175, 9, 172, 5, 130, 48, 109, 76, 53, 100, 164, 154, 129, 221, 172, 152, 183,
-      52, 130, 15, 1, 243, 190, 143, 240, 73, 106, 134, 78, 192, 245, 193, 11, 64, 122, 19, 165, 177, 177, 132, 144,
-      212, 104, 102)
+    PHash.marrHash(image).map(_.toList) shouldEqual Right(
+      List(33, 228, 155, 210, 21, 192, 126, 154, 53, 22, 221, 31, 24, 82, 240, 204, 201, 136, 225, 234, 33, 203, 27,
+        236, 57, 67, 33, 34, 222, 17, 132, 97, 43, 130, 184, 54, 171, 68, 197, 226, 194, 164, 203, 3, 82, 137, 31, 125,
+        3, 246, 96, 41, 7, 192, 133, 8, 136, 66, 158, 73, 17, 15, 55, 6, 36, 6, 56, 131, 52, 206, 13, 42)
+    )
   }
 
   "Marr hashes" should "compare not equal" in {
-    val example2 = ImageIO.read(new File("src/test/resources/example2.jpg"))
-    val example3 = ImageIO.read(new File("src/test/resources/example3.jpg"))
+    val bag1 = ImageIO.read(new File("src/test/resources/bag1.jpg"))
+    val bag2 = ImageIO.read(new File("src/test/resources/bag2.jpg"))
 
     (for {
-      example2MarrHash <- PHash.marrHash(example2)
-      example3MarrHash <- PHash.marrHash(example3)
-    } yield PHash.marrHashDistance(example2MarrHash, example3MarrHash)) shouldEqual Right(Some(0.3697916666666667))
+      bag1MarrHash <- PHash.marrHash(bag1)
+      bag2MarrHash <- PHash.marrHash(bag2)
+    } yield PHash.marrHashDistance(bag1MarrHash, bag2MarrHash)) shouldEqual Right(Some(0.4114583333333333))
   }
 
   "Marr hashes" should "compare equal" in {
-    val example2 = ImageIO.read(new File("src/test/resources/example2.jpg"))
-    val example4 = ImageIO.read(new File("src/test/resources/example4.jpg"))
+    val origin = ImageIO.read(new File("src/test/resources/lenna.jpg"))
+    val modified = ImageIO.read(new File("src/test/resources/lenna2.jpg"))
 
     (for {
-      example2MarrHash <- PHash.marrHash(example2)
-      example4MarrHash <- PHash.marrHash(example4)
-    } yield PHash.marrHashDistance(example2MarrHash, example4MarrHash)) shouldEqual Right(Some(0.3315972222222222))
+      originMarrHash <- PHash.marrHash(origin)
+      modifiedMarrHash <- PHash.marrHash(modified)
+    } yield PHash.marrHashDistance(originMarrHash, modifiedMarrHash)) shouldEqual Right(Some(0.5052083333333334))
+  }
+
+  "Marr hash" should "compare nature" in {
+    val a = ImageIO.read(new File("src/test/resources/mountain1.jpeg"))
+    val b = ImageIO.read(new File("src/test/resources/mountain2.jpeg"))
+
+    (for {
+      aMarrHash <- PHash.marrHash(a)
+      bMarrHash <- PHash.marrHash(b)
+    } yield PHash.marrHashDistance(aMarrHash, bMarrHash).map(_.toFloat ~= 0.484375F)) shouldEqual Right(Some(true))
   }
 
   "Marr hashes" should "compare dog and cat" in {
@@ -72,6 +82,6 @@ class MarrHashTest extends FlatSpec with Matchers with PrivateMethodTester {
     (for {
       dogMarrHash <- PHash.marrHash(dog)
       catMarrHash <- PHash.marrHash(cat)
-    } yield PHash.marrHashDistance(dogMarrHash, catMarrHash)) shouldEqual Right(Some(0.4947916666666667))
+    } yield PHash.marrHashDistance(dogMarrHash, catMarrHash)) shouldEqual Right(Some(0.4704861111111111))
   }
 }
