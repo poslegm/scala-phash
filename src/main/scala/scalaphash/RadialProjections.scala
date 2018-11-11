@@ -1,4 +1,4 @@
-package com.github.poslegm.scalaphash
+package scalaphash
 
 /**
   * Utilitary class for projections computing (Radial Hash algorithm)

@@ -1,4 +1,4 @@
-package com.github.poslegm.scalaphash
+package scalaphash
 
 private[scalaphash] object MathUtils {
   type FloatMatrix = Array[Array[Float]]

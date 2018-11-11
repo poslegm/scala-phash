@@ -1,4 +1,4 @@
-package com.github.poslegm.scalaphash
+package scalaphash
 
 import java.awt.image.BufferedImage
 

@@ -1,9 +1,9 @@
-package com.github.poslegm.scalaphash
+package scalaphash
 
 import java.awt.image.BufferedImage
 
-import com.github.poslegm.scalaphash.MathUtils._
-import com.github.poslegm.scalaphash.PHash._
+import scalaphash.MathUtils._
+import scalaphash.PHash._
 
 import scala.annotation.tailrec
 import scala.collection.mutable.ArrayBuffer

@@ -30,7 +30,7 @@ All public api with scaladocs decsribed in object [`PHash`](https://github.com/p
 #### Example
 
 ```scala
-import com.github.poslegm.scalaphash.PHash._
+import scalaphash.PHash._
 import javax.imageio.ImageIO
 
 val img1 = ImageIO.read(new File("img1.jpg"))
