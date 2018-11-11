@@ -14,7 +14,7 @@ My library implements three Perceptual Hashing algorithms: Radial Hash, DCT hash
 
 ```scala 
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
-libraryDependencies += "com.github.poslegm" %% "scala-phash" % "1.1.0"
+libraryDependencies += "com.github.poslegm" %% "scala-phash" % "1.1.1"
 ```
 
 #### API
@@ -50,24 +50,24 @@ radialDistance.left.foreach(e => println(e.getMessage))
 ```
 
 **Radial** distance is _more_ when images are similar.
-**DCT** and **Marr** distances are _less_ when images are similar.
+**DCT** and **Marr** distances are _less_ when images are similar. Recommended to make a decision on image similarity when at least two hashes pass thresholds.
 
-<img width='200px' src='https://github.com/poslegm/scala-phash/blob/master/src/test/resources/example2.jpg'>
-<img width='200px' src='https://github.com/poslegm/scala-phash/blob/master/src/test/resources/example4.jpg'>
+<img width='200px' src='https://github.com/poslegm/scala-phash/blob/master/src/test/resources/lenna.jpg'>
+<img width='200px' src='https://github.com/poslegm/scala-phash/blob/master/src/test/resources/lenna2.jpg'>
 
 ```
-radial: 0.9538751316650709
-dct: 1
-marr: 0.3315972222222222
+radial: 0.9508017124330319
+dct: 13
+marr: 0.5052083333333334
 ```
 
 <img width='200px' src='https://github.com/poslegm/scala-phash/blob/master/src/test/resources/1.jpg'>
 <img width='200px' src='https://github.com/poslegm/scala-phash/blob/master/src/test/resources/2.jpg'>
 
 ```
-radial: 0.36438994709451805
-dct: 36
-marr: 0.4947916666666667
+radial: 0.3996241672331173
+dct: 41
+marr: 0.4704861111111111
 ```
 
 ## Warning

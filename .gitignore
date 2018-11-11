@@ -9,3 +9,7 @@ src/test/resources/equalized-*
 src/test/resources/grayscaled-*
 src/test/resources/resized-*
 src/test/resources/processed*
+.ensime
+.ensime_cache/
+ensime-langserver.log
+pc.stdout.log
