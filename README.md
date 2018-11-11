@@ -14,7 +14,7 @@ My library implements three Perceptual Hashing algorithms: Radial Hash, DCT hash
 
 ```scala 
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
-libraryDependencies += "com.github.poslegm" %% "scala-phash" % "1.1.0"
+libraryDependencies += "com.github.poslegm" %% "scala-phash" % "1.1.1"
 ```
 
 #### API
