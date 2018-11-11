@@ -25,7 +25,7 @@ There is three functions for each hashing algorithm. Let's consider them by exam
 
 Similar functions written for Marr and Radial Hash algorithms.
 
-All public api with scaladocs decsribed in trait [`PHashAlgebra`](https://github.com/poslegm/scala-phash/blob/master/src/main/scala/com/github/poslegm/scalaphash/PHashAlgebra.scala).
+All public api with scaladocs decsribed in object [`PHash`](https://github.com/poslegm/scala-phash/blob/master/src/main/scala/com/github/poslegm/scalaphash/PHash.scala).
 
 #### Example
 

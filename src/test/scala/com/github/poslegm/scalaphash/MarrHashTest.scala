@@ -25,7 +25,7 @@ class MarrHashTest extends FlatSpec with Matchers with PrivateMethodTester {
     ).map(_.map(_.toFloat))
 
     val createMarrKernel = PrivateMethod[Array[Array[Float]]]('createMarrKernel)
-    val matrix = PHash invokePrivate createMarrKernel(1, 1)
+    val matrix = PHashInternal invokePrivate createMarrKernel(1, 1)
     matrix.length shouldEqual canonical.length
     matrix.indices.foreach(i => matrix(i).length shouldEqual canonical(i).length)
 
