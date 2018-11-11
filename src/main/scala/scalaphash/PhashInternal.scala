@@ -1,22 +1,18 @@
-package com.github.poslegm.scalaphash
+package scalaphash
 
 import java.awt.image.BufferedImage
 
-import com.github.poslegm.scalaphash.MathUtils._
+import scalaphash.MathUtils._
+import scalaphash.PHash._
 
 import scala.annotation.tailrec
 import scala.collection.mutable.ArrayBuffer
-import scala.util.control.NonFatal
 
-object PHash extends PHashAlgebra {
+private[scalaphash] object PHashInternal {
   private lazy val dctMatrix = createDctMatrix(32)
   private lazy val dctMatrixTransposed = dctMatrix.transpose
 
-  override def dctHash(image: BufferedImage): Either[Throwable, DCTHash] =
-    try Right(unsafeDctHash(image))
-    catch { case NonFatal(e) => Left(e) }
-
-  override def unsafeDctHash(image: BufferedImage): DCTHash = {
+  def unsafeDctHash(image: BufferedImage): DCTHash = {
     val processedImage = PixelMatrix(image).makeGrayScale().makeConvolved()
     val matrix = processedImage.resize(32, 32).toMatrix
     val dctImage = dctMatrix * matrix * dctMatrixTransposed
@@ -29,7 +25,7 @@ object PHash extends PHashAlgebra {
     }
   }
 
-  override def dctHashDistance(hash1: DCTHash, hash2: DCTHash): Long = {
+  def dctHashDistance(hash1: DCTHash, hash2: DCTHash): Long = {
     var x = hash1 ^ hash2
     val m1 = 0x5555555555555555L
     val m2 = 0x3333333333333333L
@@ -41,12 +37,7 @@ object PHash extends PHashAlgebra {
     (x * h01) >> 56
   }
 
-  override def marrHash(image: BufferedImage, alpha: Int = 2, level: Int = 1): Either[Throwable, MarrHash] =
-    try Right(unsafeMarrHash(image, alpha, level))
-    catch { case NonFatal(e) => Left(e) }
-
-  override def unsafeMarrHash(image: BufferedImage, alpha: Int = 2, level: Int = 1): MarrHash = {
-
+  def unsafeMarrHash(image: BufferedImage, alpha: Int, level: Int): MarrHash = {
     val processed = PixelMatrix(image).makeGrayScale().makeBlurred().resize(512, 512).equalize(256)
 
     val kernel = createMarrKernel(alpha, level)
@@ -88,7 +79,7 @@ object PHash extends PHashAlgebra {
     hash.toArray
   }
 
-  override def marrHashDistance(hash1: MarrHash, hash2: MarrHash): Option[Double] =
+  def marrHashDistance(hash1: MarrHash, hash2: MarrHash): Option[Double] =
     if (hash1.length != hash2.length || hash1.isEmpty) {
       None
     } else {
@@ -99,11 +90,7 @@ object PHash extends PHashAlgebra {
       Some(distance / maxBitsCount)
     }
 
-  override def radialHash(image: BufferedImage, projectionsCount: Int = 180): Either[Throwable, RadialHash] =
-    try Right(unsafeRadialHash(image, projectionsCount))
-    catch { case NonFatal(e) => Left(e) }
-
-  override def unsafeRadialHash(image: BufferedImage, projectionsCount: Int = 180): RadialHash = {
+  def unsafeRadialHash(image: BufferedImage, projectionsCount: Int): RadialHash = {
     val grayscaled = if (image.getColorModel.getColorSpace.getNumComponents >= 3) {
       PixelMatrix(image).makeGrayScale()
     } else {
@@ -116,7 +103,7 @@ object PHash extends PHashAlgebra {
     calculateRadialHash(features)
   }
 
-  override def radialHashDistance(hash1: RadialHash, hash2: RadialHash): Double = {
+  def radialHashDistance(hash1: RadialHash, hash2: RadialHash): Double = {
     val meanX: Double = hash1.sum / hash2.length
     val meanY: Double = hash2.sum / hash2.length
     var max = 0.0

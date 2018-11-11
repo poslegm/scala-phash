@@ -1,4 +1,4 @@
-package com.github.poslegm.scalaphash
+package scalaphash
 
 import java.io.File
 import javax.imageio.ImageIO
@@ -18,7 +18,7 @@ class DCTHashTest extends FlatSpec with Matchers with PrivateMethodTester {
     ).map(_.map(_.toFloat))
 
     val createDctMatrix = PrivateMethod[Array[Array[Float]]]('createDctMatrix)
-    val matrix = PHash invokePrivate createDctMatrix(6)
+    val matrix = PHashInternal invokePrivate createDctMatrix(6)
     matrix.length shouldEqual canonical.length
     matrix(0).length shouldEqual canonical(0).length
 
