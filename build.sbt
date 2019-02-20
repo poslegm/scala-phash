@@ -4,7 +4,7 @@ organization := "com.github.poslegm"
 
 version := "1.2.0"
 
-scalaVersion := "2.12.6"
+scalaVersion := "2.12.8"
 crossScalaVersions := Seq("2.11.8", "2.12.1", scalaVersion.value)
 
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
@@ -22,7 +22,7 @@ scalacOptions ++= Seq(
   "-language:higherKinds",
   "-Xfatal-warnings",
   "-Ypartial-unification",
-  "-Ywarn-unused:imports"
+  "-Ywarn-unused"
 )
 
 fork := true
