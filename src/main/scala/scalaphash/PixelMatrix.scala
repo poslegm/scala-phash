@@ -24,10 +24,15 @@ private[scalaphash] case class PixelMatrix private (
     if (pixelElementsCount < 3) {
       this.copy(imageType = BufferedImage.TYPE_BYTE_GRAY)
     } else {
-      val grayPixels = (flattenPixels.indices by pixelElementsCount).map { i =>
+      var i = 0
+      var j = 0
+      val grayPixels = new Array[Float](flattenPixels.length / pixelElementsCount)
+      while (i <= flattenPixels.length - pixelElementsCount) {
         val (r, g, b) = (flattenPixels(i + 2), flattenPixels(i + 1), flattenPixels(i))
-        cut((66 * r + 129 * g + 25 * b + 128) / 256.0f + 16, 0, 255)
-      }.toArray
+        grayPixels(j) = cut((66 * r + 129 * g + 25 * b + 128) / 256.0f + 16, 0, 255)
+        j += 1
+        i += pixelElementsCount
+      }
 
       this.copy(
         imageType = BufferedImage.TYPE_BYTE_GRAY,
@@ -205,7 +210,9 @@ private[scalaphash] case class PixelMatrix private (
     * @param maxValue maximum value of channel for adding to histogram
     * */
   private def createHistogram(levels: Int, minValue: Float, maxValue: Float): ArrayBuffer[Long] = {
-    if (minValue == maxValue) { return ArrayBuffer.empty }
+    if (minValue == maxValue) {
+      return ArrayBuffer.empty
+    }
 
     val hist = ArrayBuffer.fill[Long](levels)(0)
     flattenPixels.filter(p => p >= minValue && p <= maxValue).foreach {
@@ -252,20 +259,28 @@ private[scalaphash] case class PixelMatrix private (
       image.copy(flattenPixels = res)
     }
 
-    private def computeInnerPixels(): Unit =
-      for {
-        y <- my1 until mye
-        x <- mx1 until mxe
-      } {
-        var value = 0f
-        for {
-          ym <- -my1 to my2
-          xm <- -mx1 to mx2
-        } {
-          value += image.getY(x + xm, y + ym) * kernel(mx1 + xm)(my1 + ym)
+    private def computeInnerPixels(): Unit = {
+      var y = my1
+      while (y < mye) {
+        var x = mx1
+        while (x < mxe) {
+          var value = 0f
+          var ym = -my1
+          while (ym <= my2) {
+            var xm = -mx1
+            while (xm <= mx2) {
+              value += image.getY(x + xm, y + ym) * kernel(mx1 + xm)(my1 + ym)
+              xm += 1
+            }
+            ym += 1
+          }
+
+          res(y * image.width + x) = value.round & 0xFF
+          x += 1
         }
-        res(y * image.width + x) = value.round & 0xFF
+        y += 1
       }
+    }
 
     private def computeOuterPixels(): Unit =
       for (y <- 0 until image.height) {
@@ -291,8 +306,8 @@ private[scalaphash] case class PixelMatrix private (
         }
       }
   }
-
 }
+
 private[scalaphash] object PixelMatrix {
 
   def apply(image: BufferedImage): PixelMatrix =
@@ -314,8 +329,14 @@ private[scalaphash] object PixelMatrix {
     val pixelElementCount = image.getColorModel.getNumComponents
     if (image.getColorModel.getComponentSize(0) == 8) {
       val buffer = Array.ofDim[Byte](image.getWidth() * image.getHeight() * pixelElementCount)
+      val floatBuffer = Array.ofDim[Float](image.getWidth() * image.getHeight() * pixelElementCount)
       image.getRaster.getDataElements(0, 0, image.getWidth(), image.getHeight(), buffer)
-      buffer.map(p => (p & 0xFF).toFloat)
+      var i = 0
+      while (i < buffer.length) {
+        floatBuffer(i) = (buffer(i) & 0xFF).toFloat
+        i += 1
+      }
+      floatBuffer
     } else {
       throw new IllegalArgumentException("Can't work with non-byte image buffers")
     }
