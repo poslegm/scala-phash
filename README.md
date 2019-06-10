@@ -1,7 +1,7 @@
 # Scala pHash
 
 [![Build Status](https://travis-ci.org/poslegm/scala-phash.svg?branch=master)](https://travis-ci.org/poslegm/scala-phash)
-[![Maven](https://img.shields.io/maven-central/v/com.github.poslegm/scala-phash_2.12.svg)](https://search.maven.org/artifact/com.github.poslegm/scala-phash_2.12/)
+[![Maven](https://img.shields.io/maven-central/v/com.github.poslegm/scala-phash_2.13.svg)](https://search.maven.org/artifact/com.github.poslegm/scala-phash_2.13/)
 
 Scala fork of [pHash](http://phash.org) library. This library identifies whether images are similar. You can try it at [demo page](https://chugunkov.website/scala-phash-demo).  
 
