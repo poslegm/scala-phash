@@ -2,16 +2,16 @@ name := "scala-phash"
 
 organization := "com.github.poslegm"
 
-version := "1.2.1"
+version := "1.2.2"
 
-scalaVersion := "2.12.8"
-crossScalaVersions := Seq("2.11.8", "2.12.1", scalaVersion.value)
+scalaVersion := "2.13.0"
+crossScalaVersions := Seq("2.11.8", "2.12.8", scalaVersion.value)
 
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 
 libraryDependencies ++= Seq(
-  "org.scalactic" %% "scalactic" % "3.0.1",
-  "org.scalatest" %% "scalatest" % "3.0.1" % "test",
+  "org.scalactic" %% "scalactic" % "3.0.8",
+  "org.scalatest" %% "scalatest" % "3.0.8" % "test",
   "com.jhlabs" % "filters" % "2.0.235-1"
 )
 
@@ -21,7 +21,6 @@ scalacOptions ++= Seq(
   "-feature",
   "-language:higherKinds",
   "-Xfatal-warnings",
-  "-Ypartial-unification",
   "-Ywarn-unused"
 )
 

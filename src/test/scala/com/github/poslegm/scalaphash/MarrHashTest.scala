@@ -24,7 +24,7 @@ class MarrHashTest extends FlatSpec with Matchers with PrivateMethodTester {
         -3.37606e-06)
     ).map(_.map(_.toFloat))
 
-    val createMarrKernel = PrivateMethod[Array[Array[Float]]]('createMarrKernel)
+    val createMarrKernel = PrivateMethod[Array[Array[Float]]](Symbol("createMarrKernel"))
     val matrix = PHashInternal invokePrivate createMarrKernel(1, 1)
     matrix.length shouldEqual canonical.length
     matrix.indices.foreach(i => matrix(i).length shouldEqual canonical(i).length)
@@ -72,7 +72,7 @@ class MarrHashTest extends FlatSpec with Matchers with PrivateMethodTester {
     (for {
       aMarrHash <- PHash.marrHash(a)
       bMarrHash <- PHash.marrHash(b)
-    } yield PHash.marrHashDistance(aMarrHash, bMarrHash).map(_.toFloat ~= 0.484375F)) shouldEqual Right(Some(true))
+    } yield PHash.marrHashDistance(aMarrHash, bMarrHash).map(_.toFloat ~= 0.484375f)) shouldEqual Right(Some(true))
   }
 
   "Marr hashes" should "compare dog and cat" in {

@@ -7,6 +7,7 @@ import scalaphash.PHash._
 
 import scala.annotation.tailrec
 import scala.collection.mutable.ArrayBuffer
+import scala.math.Ordering.Float.TotalOrdering
 
 private[scalaphash] object PHashInternal {
   private lazy val dctMatrix = createDctMatrix(32)
@@ -203,7 +204,7 @@ private[scalaphash] object PHashInternal {
     }
   }
 
-  private def findMedian(floats: Seq[Float]): Float = floats match {
+  private def findMedian(floats: Array[Float]): Float = floats match {
     case xs if xs.length % 2 == 0 =>
       val tail = xs.sorted.drop(xs.length / 2 - 1)
       (tail.head + tail.tail.head) / 2.0f

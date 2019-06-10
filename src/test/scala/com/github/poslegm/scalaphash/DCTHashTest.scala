@@ -17,7 +17,7 @@ class DCTHashTest extends FlatSpec with Matchers with PrivateMethodTester {
       Array(0.408248, -0.557678, 0.5, -0.408248, 0.288675, -0.149429)
     ).map(_.map(_.toFloat))
 
-    val createDctMatrix = PrivateMethod[Array[Array[Float]]]('createDctMatrix)
+    val createDctMatrix = PrivateMethod[Array[Array[Float]]](Symbol("createDctMatrix"))
     val matrix = PHashInternal invokePrivate createDctMatrix(6)
     matrix.length shouldEqual canonical.length
     matrix(0).length shouldEqual canonical(0).length

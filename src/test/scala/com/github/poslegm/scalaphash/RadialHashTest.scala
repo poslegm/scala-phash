@@ -11,9 +11,9 @@ class RadialHashTest extends FlatSpec with Matchers with PrivateMethodTester {
 
     val example2RadialHash = PHash.radialHash(bag)
 
-    example2RadialHash.right.get shouldEqual Array(193, 190, 0, 204, 92, 209, 183, 165, 254, 211, 188, 209, 182, 185,
-      176, 203, 182, 178, 190, 196, 187, 192, 197, 193, 192, 199, 200, 189, 186, 195, 191, 192, 198, 191, 192, 192, 195,
-      195, 192, 194)
+    example2RadialHash.getOrElse(Array.empty) shouldEqual Array(193, 190, 0, 204, 92, 209, 183, 165, 254, 211, 188, 209,
+      182, 185, 176, 203, 182, 178, 190, 196, 187, 192, 197, 193, 192, 199, 200, 189, 186, 195, 191, 192, 198, 191, 192,
+      192, 195, 195, 192, 194)
   }
 
   "Radial hash" should "compare not equal" in {
