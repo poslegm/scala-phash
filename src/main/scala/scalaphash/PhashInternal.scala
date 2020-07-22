@@ -64,9 +64,8 @@ private[scalaphash] object PHashInternal {
         if (s > ave) {
           hashByte |= 1
           onesCount += 1
-        } else {
+        } else
           zerosCount += 1
-        }
 
         bitIndex += 1
 
@@ -81,9 +80,9 @@ private[scalaphash] object PHashInternal {
   }
 
   def marrHashDistance(hash1: MarrHash, hash2: MarrHash): Option[Double] =
-    if (hash1.length != hash2.length || hash1.isEmpty) {
+    if (hash1.length != hash2.length || hash1.isEmpty)
       None
-    } else {
+    else {
       val distance = hash1.toSeq.zip(hash2).foldLeft(0.0) {
         case (dist, (byte1, byte2)) => dist + bitCount(byte1 ^ byte2)
       }
@@ -92,11 +91,11 @@ private[scalaphash] object PHashInternal {
     }
 
   def unsafeRadialHash(image: BufferedImage, projectionsCount: Int): RadialHash = {
-    val grayscaled = if (image.getColorModel.getColorSpace.getNumComponents >= 3) {
-      PixelMatrix(image).makeGrayScale()
-    } else {
-      PixelMatrix(image)
-    }
+    val grayscaled =
+      if (image.getColorModel.getColorSpace.getNumComponents >= 3)
+        PixelMatrix(image).makeGrayScale()
+      else
+        PixelMatrix(image)
 
     val processed = grayscaled.makeBlurred().resize(128, 128)
     val projections = calculateProjections(processed, projectionsCount)
@@ -162,14 +161,14 @@ private[scalaphash] object PHashInternal {
         acc + features(i) * Math.cos((Math.PI * (2 * i + 1) * k) / (2 * features.length))
       }
 
-      val value = if (k == 0) {
-        sum / Math.sqrt(features.length)
-      } else {
-        sum * Math.sqrt(2) / Math.sqrt(features.length)
-      }
+      val value =
+        if (k == 0)
+          sum / Math.sqrt(features.length)
+        else
+          sum * Math.sqrt(2) / Math.sqrt(features.length)
 
-      if (value > max) { max = value }
-      if (value < min) { min = value }
+      if (value > max) max = value
+      if (value < min) min = value
 
       value
     }
@@ -179,10 +178,11 @@ private[scalaphash] object PHashInternal {
 
   private def bitCount(x: Int): Int = {
     @tailrec
-    def iter(x: Int, num: Int = 0): Int = x match {
-      case 0 => num
-      case _ => iter(x & (x - 1), num + 1)
-    }
+    def iter(x: Int, num: Int = 0): Int =
+      x match {
+        case 0 => num
+        case _ => iter(x & (x - 1), num + 1)
+      }
     iter(x)
   }
 
@@ -204,10 +204,11 @@ private[scalaphash] object PHashInternal {
     }
   }
 
-  private def findMedian(floats: Array[Float]): Float = floats match {
-    case xs if xs.length % 2 == 0 =>
-      val tail = xs.sorted.drop(xs.length / 2 - 1)
-      (tail.head + tail.tail.head) / 2.0f
-    case xs => xs.sorted.drop(xs.length / 2).head
-  }
+  private def findMedian(floats: Array[Float]): Float =
+    floats match {
+      case xs if xs.length % 2 == 0 =>
+        val tail = xs.sorted.drop(xs.length / 2 - 1)
+        (tail.head + tail.tail.head) / 2.0f
+      case xs => xs.sorted.drop(xs.length / 2).head
+    }
 }

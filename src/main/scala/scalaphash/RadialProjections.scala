@@ -2,14 +2,16 @@ package scalaphash
 
 /**
   * Utilitary class for projections computing (Radial Hash algorithm)
-  * */
+  */
 private[scalaphash] class RadialProjections(image: PixelMatrix, val projectionsCount: Int) {
   private lazy val Theta180 = Array.tabulate(180)(_ * Math.PI / 180)
   private lazy val TanTheta180 = Array.tabulate(180)(i => Math.tan(Theta180(i)))
 
   private lazy val maxSide = if (image.width > image.height) image.width else image.height
-  private lazy val xOff = (image.width >> 1) + (image.width & 0x1) // round(image.getWidth/2) but only with integer operations
-  private lazy val yOff = (image.height >> 1) + (image.height & 0x1) // round(image.getHeight/2) but only with integer operations
+  private lazy val xOff =
+    (image.width >> 1) + (image.width & 0x1) // round(image.getWidth/2) but only with integer operations
+  private lazy val yOff =
+    (image.height >> 1) + (image.height & 0x1) // round(image.getHeight/2) but only with integer operations
 
   val countPerLine: Array[Int] = Array.fill(projectionsCount)(0)
   val projections: Array[Array[Int]] = Array.fill(projectionsCount, maxSide)(0)
@@ -52,10 +54,12 @@ private[scalaphash] class RadialProjections(image: PixelMatrix, val projectionsC
           projections(k)(x) = image.getY(x, yd + yOff)
           countPerLine(k) += 1
         }
-        if ((yOff - yd >= 0)
+        if (
+          (yOff - yd >= 0)
           && (yOff - yd < image.width)
           && (2 * yOff - x >= 0)
-          && (2 * yOff - x < image.height) && (k != 3 * projectionsCount / 4)) {
+          && (2 * yOff - x < image.height) && (k != 3 * projectionsCount / 4)
+        ) {
           projections(k - j)(x) = image.getY(-yd + yOff, -(x - yOff) + yOff)
           countPerLine(k - j) += 1
         }

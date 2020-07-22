@@ -19,11 +19,11 @@ private[scalaphash] case class PixelMatrix private (
     * Makes image grayscale by converting RGB to YCbCr and keeping Y channel only
     *
     * @return PixelMatrix with Y channel only
-    * */
+    */
   def makeGrayScale(): PixelMatrix =
-    if (pixelElementsCount < 3) {
+    if (pixelElementsCount < 3)
       this.copy(imageType = BufferedImage.TYPE_BYTE_GRAY)
-    } else {
+    else {
       var i = 0
       var j = 0
       val grayPixels = new Array[Float](flattenPixels.length / pixelElementsCount)
@@ -47,7 +47,7 @@ private[scalaphash] case class PixelMatrix private (
     * Alias for `corellate` as well as in the CImg library
     * @param kernel correlation matrix
     * @return new PixelMatrix with modified pixels
-    * */
+    */
   def makeConvolved(kernel: Array[Array[Float]] = defaultConvolutionKernel): PixelMatrix = correlate(kernel)
 
   /**
@@ -55,7 +55,7 @@ private[scalaphash] case class PixelMatrix private (
     * (https://en.wikipedia.org/wiki/Digital_image_correlation)
     * @param kernel correlation matrix
     * @return new PixelMatrix with modified pixels
-    * */
+    */
   def correlate(kernel: Array[Array[Float]]): PixelMatrix = new Correlation(this, kernel).compute()
 
   /**
@@ -64,7 +64,7 @@ private[scalaphash] case class PixelMatrix private (
     * @param min minimum channel value
     * @param max maximum channel value
     * @return new PixelMatrix with modified pixels
-    * */
+    */
   def normalize(min: Float, max: Float): PixelMatrix = {
     val (minValue, maxValue) = findMinMaxChannelValue()
     if (min != minValue || max != maxValue) {
@@ -72,9 +72,8 @@ private[scalaphash] case class PixelMatrix private (
         (p - minValue) / (maxValue - minValue) * (max - min) + min
       }
       this.copy(flattenPixels = normalizedPixels)
-    } else {
+    } else
       this
-    }
   }
 
   /**
@@ -82,7 +81,7 @@ private[scalaphash] case class PixelMatrix private (
     * @param dstWidth width of new image
     * @param dstHeight height of new image
     * @return resized PixelMatrix
-    * */
+    */
   def resize(dstWidth: Int, dstHeight: Int): PixelMatrix = {
     val res = new BufferedImage(dstWidth, dstHeight, imageType)
 
@@ -99,7 +98,7 @@ private[scalaphash] case class PixelMatrix private (
     * Computes blur radius by image resolution
     * Radius computation were chosen in such a way as to approximate CImg blur with sigma 1
     * @return new PixelMatrix (blurred)
-    * */
+    */
   def makeBlurred(): PixelMatrix = {
     val dst = new BufferedImage(width, height, imageType)
     new GaussianFilter(Math.max(height, width) / 200).filter(toBufferedImage(), dst)
@@ -111,7 +110,7 @@ private[scalaphash] case class PixelMatrix private (
     * (https://en.wikipedia.org/wiki/Histogram_equalization)
     * @param levels histogram levels
     * @return new PixelMatrix with modified pixels
-    * */
+    */
   def equalize(levels: Int): PixelMatrix = {
     val (min, max) = findMinMaxChannelValue()
 
@@ -134,13 +133,12 @@ private[scalaphash] case class PixelMatrix private (
 
   /**
     * Compares images by each pixel
-    * */
+    */
   def isEqualTo(other: PixelMatrix): Boolean =
-    if (width != other.width || height != other.height) {
+    if (width != other.width || height != other.height)
       false
-    } else {
+    else
       flattenPixels.sameElements(other.flattenPixels)
-    }
 
   /**
     * Gets Y channel value of specified pixel
@@ -148,8 +146,8 @@ private[scalaphash] case class PixelMatrix private (
     * @param x x pixel coordinate
     * @param y y pixel coordinate
     * @return Y channel value
-    * */
-  def getY(x: Int, y: Int): Int = processedColors(y * width + x) & 0xFF
+    */
+  def getY(x: Int, y: Int): Int = processedColors(y * width + x) & 0xff
 
   /**
     * Gets Y channel value of specified pixels
@@ -159,7 +157,7 @@ private[scalaphash] case class PixelMatrix private (
     * @param w width of region
     * @param h height of region
     * @return Y channel value
-    * */
+    */
   def getY(x: Int, y: Int, w: Int, h: Int): Array[Int] =
     (for {
       j <- 0 until h
@@ -170,7 +168,7 @@ private[scalaphash] case class PixelMatrix private (
     * Creates 2-dimension matrix with Y channel values of each pixel
     * Use only if you sure that image has YCbCr color model!
     * @return 2-dimension Array with image pixels
-    * */
+    */
   def toMatrix: Array[Array[Float]] =
     Array.tabulate(width, height)((i, j) => processedColors(j * width + i))
 
@@ -178,7 +176,7 @@ private[scalaphash] case class PixelMatrix private (
     * Create new Buffered image with pixel values from flatten array
     * @param imageType type of image
     * @return new BufferedImage
-    * */
+    */
   def toBufferedImage(imageType: Int = imageType): BufferedImage = {
     val temp = new BufferedImage(width, height, imageType)
     imageType match {
@@ -192,7 +190,7 @@ private[scalaphash] case class PixelMatrix private (
   /**
     * Y channel values of flatten pixels after color processing
     * Use only if you sure that image has YCbCr color model!
-    * */
+    */
   private lazy val processedColors = grayBufferedImage.getRGB(0, 0, width, height, null, 0, width)
 
   private lazy val grayBufferedImage = {
@@ -208,11 +206,10 @@ private[scalaphash] case class PixelMatrix private (
     * @param levels count of histogram columns
     * @param minValue minimum value of channel for adding to histogram
     * @param maxValue maximum value of channel for adding to histogram
-    * */
+    */
   private def createHistogram(levels: Int, minValue: Float, maxValue: Float): ArrayBuffer[Long] = {
-    if (minValue == maxValue) {
+    if (minValue == maxValue)
       return ArrayBuffer.empty
-    }
 
     val hist = ArrayBuffer.fill[Long](levels)(0)
     flattenPixels.filter(p => p >= minValue && p <= maxValue).foreach {
@@ -227,7 +224,7 @@ private[scalaphash] case class PixelMatrix private (
     * Example: image has 2 pixels in RBG: (123, 23, 124) and (12, 25, 1)
     *          function will return (1, 124)
     * @return tuple of minimum and maximum channel values
-    * */
+    */
   private def findMinMaxChannelValue(): (Int, Int) =
     flattenPixels.foldLeft(Int.MaxValue -> Int.MinValue) {
       case ((min, max), c) =>
@@ -240,7 +237,7 @@ private[scalaphash] case class PixelMatrix private (
     * Method class for Image correlation algorithm
     * Works only with YCbCr!
     * (https://refactoring.com/catalog/replaceMethodWithMethodObject.html)
-    * */
+    */
   private[scalaphash] class Correlation(image: PixelMatrix, kernel: Array[Array[Float]]) {
     private val res = Array.fill(image.width * image.height * image.pixelElementsCount)(0f)
 
@@ -252,7 +249,7 @@ private[scalaphash] case class PixelMatrix private (
       * Applies Image Correlation algorithm
       * (https://en.wikipedia.org/wiki/Digital_image_correlation)
       * @return new PixelMatrix
-      * */
+      */
     def compute(): PixelMatrix = {
       computeInnerPixels()
       computeOuterPixels()
@@ -275,7 +272,7 @@ private[scalaphash] case class PixelMatrix private (
             ym += 1
           }
 
-          res(y * image.width + x) = value.round & 0xFF
+          res(y * image.width + x) = value.round & 0xff
           x += 1
         }
         y += 1
@@ -290,19 +287,15 @@ private[scalaphash] case class PixelMatrix private (
           for {
             ym <- -my1 to my2
             xm <- -mx1 to mx2
-          } {
-            if (!(x + xm < 0 || x + xm >= image.width || y + ym < 0 || y + ym >= image.height)) {
-              value += image.getY(x + xm, y + ym) * kernel(mx1 + xm)(my1 + ym)
-            }
-          }
+          } if (!(x + xm < 0 || x + xm >= image.width || y + ym < 0 || y + ym >= image.height))
+            value += image.getY(x + xm, y + ym) * kernel(mx1 + xm)(my1 + ym)
 
-          res(y * image.width + x) = value.round & 0xFF
+          res(y * image.width + x) = value.round & 0xff
 
-          if ((y < my1 || y >= mye) || (x < mx1 - 1 || x >= mxe)) {
+          if ((y < my1 || y >= mye) || (x < mx1 - 1 || x >= mxe))
             x += 1
-          } else {
+          else
             x = mxe
-          }
         }
       }
   }
@@ -324,7 +317,7 @@ private[scalaphash] object PixelMatrix {
     * Example: RGB image, first pixel has red value 17, green 128, blue 23
     *          function will produce Array(17, 128, 23, ...)
     * @return Array with channels' values
-    * */
+    */
   private def createFlattenPixelsArray(image: BufferedImage): Array[Float] = {
     val pixelElementCount = image.getColorModel.getNumComponents
     if (image.getColorModel.getComponentSize(0) == 8) {
@@ -333,12 +326,11 @@ private[scalaphash] object PixelMatrix {
       image.getRaster.getDataElements(0, 0, image.getWidth(), image.getHeight(), buffer)
       var i = 0
       while (i < buffer.length) {
-        floatBuffer(i) = (buffer(i) & 0xFF).toFloat
+        floatBuffer(i) = (buffer(i) & 0xff).toFloat
         i += 1
       }
       floatBuffer
-    } else {
+    } else
       throw new IllegalArgumentException("Can't work with non-byte image buffers")
-    }
   }
 }
